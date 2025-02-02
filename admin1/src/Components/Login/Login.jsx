@@ -16,7 +16,7 @@ const Login = () => {
     setErrorMessage(""); 
 
     try {
-      const res = await axios.post("/user-login", { ...login });
+      const res = await axios.post("/admin-login", { ...login });
 
       if (res.data.EnterAllDetails) {
         setErrorMessage(res.data.EnterAllDetails);
