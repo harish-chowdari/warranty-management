@@ -29,7 +29,7 @@ const Signup = () => {
         setErrorMessage(res.data.AlreadyExist);
       } else {
         const userId = res.data._id;
-        navigate(`/home/${userId}`);
+        navigate(`/home/add-product`);
       }
     } catch (error) {
       console.log(error);

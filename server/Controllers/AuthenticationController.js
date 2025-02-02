@@ -1,5 +1,5 @@
-const AdminSchema = require("../Models/AdminAuthModel.js.js");
-const UserSchema = require("../Models/UserAuthModel.jsx");
+const AdminSchema = require("../Models/AdminAuthModel.js");
+const UserSchema = require("../Models/UserAuthModel.js");
 
 async function AdminSigUp(req, res) {
   try {

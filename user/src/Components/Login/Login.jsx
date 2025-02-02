@@ -26,7 +26,7 @@ const Login = () => {
         setErrorMessage(res.data.Incorrect);
       } else {
         const userId = res.data._id; 
-        navigate(`/home/${userId}`);
+        navigate(`/home/all-products`);
       }
     } catch (error) {
       console.log(error);

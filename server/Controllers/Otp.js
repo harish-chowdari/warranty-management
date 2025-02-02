@@ -2,8 +2,8 @@ const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const dotenv = require("dotenv");
 
-const AdminDetails = require("../Models/AdminAuthModel.js.js");
-const UserDetails = require("../Models/UserAuthModel.jsx");
+const AdminDetails = require("../Models/AdminAuthModel.js");
+const UserDetails = require("../Models/UserAuthModel.js");
 
 dotenv.config();
 
