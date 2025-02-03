@@ -9,19 +9,27 @@ const AddProduct = () => {
     price: "",
     category: "",
     quantity: "",
-    image: "",
+    image: null,
   });
 
   const handleChange = (e) => {
-    setProduct({ ...product, [e.target.name]: e.target.value });
+    if (e.target.name === "image") {
+      setProduct({ ...product, image: e.target.files[0] });
+    } else {
+      setProduct({ ...product, [e.target.name]: e.target.value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    Object.keys(product).forEach((key) => {
+      formData.append(key, product[key]);
+    });
 
     try {
-      const response = await axios.post("/create-product", product, {
-        headers: { "Content-Type": "application/json" },
+      const response = await axios.post("/create-product", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("Product added:", response.data);
     } catch (error) {
@@ -75,9 +83,8 @@ const AddProduct = () => {
           className="w-full p-2 border rounded-md"
         />
         <input
-          type="text"
+          type="file"
           name="image"
-          placeholder="Image URL or description"
           onChange={handleChange}
           className="w-full p-2 border rounded-md"
         />
