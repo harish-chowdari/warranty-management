@@ -17,8 +17,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 //middleware for product images uploading to multer
-const bookUpload = upload.fields([{ name: "image", maxCount: 1 }]);
+const productUpload = upload.fields([{ name: "image", maxCount: 1 }]);
 
 module.exports = {
-    bookUpload,
+    productUpload,
 };

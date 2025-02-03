@@ -17,7 +17,7 @@ function uploadFile(bucketName,file,folderPath=""){
             Body:fileStream,
             Key:fileKey
         }
-        // console.log(uploadParams)
+        console.log(uploadParams)
         return s3.upload(uploadParams).promise();
     }
     catch(error){

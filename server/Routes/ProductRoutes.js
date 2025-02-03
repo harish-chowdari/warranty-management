@@ -10,11 +10,11 @@ const {
     deleteProduct
 } = require('../Controllers/ProductController');
 
-const { bookUpload } = require("../multer");
+const { productUpload } = require("../multer");
 
 
 // Create a new product
-router.post('/create-product', bookUpload, createProduct);
+router.post('/create-product', productUpload, createProduct);
 
 // Get all products
 router.get('/all-products', getAllProducts);

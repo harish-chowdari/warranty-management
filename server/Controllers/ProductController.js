@@ -3,29 +3,6 @@ const Product = require('../Models/ProductModel');
 const S3 = require("../s3");
 
 
-// const createProduct = async (req, res) => {
-//     try {
-//         const { name, brand, description, image, price, category, quantity } = req.body;
-    
-//         const product = new Product({
-//             name, 
-//             brand, 
-//             description,
-//             image,
-//             price,
-//             category,
-//             quantity
-//         });
-//         const savedProduct = await product.save();
-//         console.log("Product created successfully:", savedProduct);
-//         return res.status(201).json(savedProduct);
-        
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(400).json(error);
-//     }
-// }
-
 async function createProduct(req, res) {
     try {
         const response = await S3.uploadFile( 
