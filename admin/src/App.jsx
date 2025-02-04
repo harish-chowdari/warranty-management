@@ -1,10 +1,11 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "./Components/Login/Login";
-import Signup from "./Components/Signup/Signup";
-import PasswordReset from "./Components/PasswordReset/PasswordReset";
-import AddProduct from "./Components/AddProduct/AddProduct";
-import Layout from "./Layout/Layout";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
+import PasswordReset from "./pages/auth/PasswordReset";
+import AddProduct from "./pages/product/AddProduct";
+import Layout from "./Components/Layout/Layout";
+
 
 const App = () => {
   return (

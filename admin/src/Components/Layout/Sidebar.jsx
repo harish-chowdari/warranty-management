@@ -11,11 +11,8 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="flex flex-col w-[30vh] gap-4">
-        <p className="text-2xl font-bold text-center">Logo</p>
+    <div className="flex flex-col gap-4 pt-2">
         
-        <div className="flex flex-col gap-2">
-
             <NavLink
             to={`/home/add-product`}
             className='px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600'
@@ -29,7 +26,6 @@ const Sidebar = () => {
             >
             View Warranties
             </NavLink>
-        </div>
     </div>
   );
 };
