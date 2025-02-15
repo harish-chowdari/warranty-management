@@ -15,21 +15,21 @@ const Input = ({
     isErrRequired = true,
     isInitialTouchRequired = true
 }) => {
-    const [isHovered, setIsHovered] = React.useState(false);
-    const [isFocused, setIsFocused] = React.useState(false);
+    const [isHovering, setIsHovering] = React.useState(false);
+    const [isFocusing, setIsFocusing] = React.useState(false);
 
     return (
         <div className={`flex flex-col ${marginClass}`}>
-            <label htmlFor={name}>{label}</label>
+            <label className='text-xs mb-1' htmlFor={name}>{label}dfg</label>
             <input 
-                className={`rounded-sm text-sm border disabled:cursor-not-allowed disabled:bg-gray-150 
-                ${((formik?.touched[`${name}`] && formik?.errors[`${name}`]))? 'border-red-600' : 
-                `${(isHovered || isFocused)? 'border-blue-500' : 'border-gray-300'}`} 
+                className={`rounded-sm text-xs border focus:outline-none 
+                ${(formik?.touched[`${name}`] && formik?.errors[`${name}`]) ? 'border-red-600' : 
+                (isHovering || isFocusing)? 'border-blue-500' : 'border-gray-300'}
                 ${tailwindClasses}`}
                 type={type} 
                 name={name} 
                 id={name}
-                value={formik?.values[name]} 
+                value={formik?.values[`${name}`]} 
                 onChange={e => {
                     const formattedValue = inpuFormatter ? inpuFormatter(e.target.value) : e.target.value;
                     e.target.value = formattedValue;
@@ -38,18 +38,18 @@ const Input = ({
                     formik?.handleChange(e);
                 }} 
                 placeholder={placeholder}
-                onFocus={() => setIsFocused(true)}
+                onFocus={() => setIsFocusing(true)}
                 onBlur={(e) => {
-                    setIsFocused(false);
+                    setIsFocusing(false);
                     onBlur && onBlur(e);
                     formik.handleBlur(e);
                 }}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
             />
             { isErrRequired && 
                 <div className={`flex items-center`}>
-                    <p className='text-red-500 text-[10.5px] flex-1'>
+                    <p className='text-red-500 text-[10px] flex-1'>
                         {(formik?.touched[`${name}`] && formik?.errors[`${name}`])}&nbsp;</p>
                 </div>
             } 

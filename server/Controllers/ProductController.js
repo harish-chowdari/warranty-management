@@ -7,7 +7,7 @@ async function createProduct(req, res) {
     try {
         const response = await S3.uploadFile( 
             process.env.AWS_BUCKET_NAME,
-            req.files.image[0]
+            req?.files?.image[0]
         );
 
         const { name, brand, description, image, price, category, quantity } = req.body;
