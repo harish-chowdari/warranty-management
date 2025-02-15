@@ -20,7 +20,7 @@ const Input = ({
 
     return (
         <div className={`flex flex-col ${marginClass}`}>
-            <label className='text-xs mb-1' htmlFor={name}>{label}dfg</label>
+            <label className='text-xs mb-1' htmlFor={name}>{label}</label>
             <input 
                 className={`rounded-sm text-xs border focus:outline-none 
                 ${(formik?.touched[`${name}`] && formik?.errors[`${name}`]) ? 'border-red-600' : 

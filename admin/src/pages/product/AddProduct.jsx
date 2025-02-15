@@ -30,7 +30,7 @@ const AddProduct = () => {
     initialValues: {
       name: "",
       brand: "",
-      description: "",
+      termsAndConditions: "",
       price: "",
       category: "",
       quantity: "",
@@ -39,7 +39,7 @@ const AddProduct = () => {
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
       brand: Yup.string().required("Brand is required"),
-      description: Yup.string().required("Description is required"),
+      termsAndConditions: Yup.string().required("Description is required"),
       price: Yup.number().required("Price is required"),
       category: Yup.string().required("Category is required"),
       quantity: Yup.number().required("Quantity is required"),
@@ -72,6 +72,7 @@ const AddProduct = () => {
             <Input
               name="name"
               formik={formik}
+              label="Product Name"
               placeholder="Product Name"
               value={formik.values.name}
               onChange={formik.handleChange}
@@ -82,6 +83,7 @@ const AddProduct = () => {
             <Input
               name="brand"
               formik={formik}
+              label="Brand Name"
               placeholder="Brand Name"
               value={formik.values.brand}
               onChange={formik.handleChange}
@@ -92,6 +94,7 @@ const AddProduct = () => {
             <Input
               name="price"
               type="number"
+              label="Price"
               formik={formik}
               placeholder="Price"
               value={formik.values.price}
@@ -104,6 +107,7 @@ const AddProduct = () => {
             <Input
               name="category"
               formik={formik}
+              label="Category"
               placeholder="Category"
               value={formik.values.category}
               onChange={formik.handleChange}
@@ -115,6 +119,7 @@ const AddProduct = () => {
             <Input
               name="quantity"
               type="number"
+              label="Quantity"
               formik={formik}
               placeholder="Quantity"
               value={formik.values.quantity}
@@ -125,11 +130,12 @@ const AddProduct = () => {
           </div>
           <div>
             {/* Use a native file input to properly capture the file */}
-            <label className="block text-sm">Image</label>
+            <label className="block text-sm  mb-[1px]">Image</label>
             <input
               id="image"
               name="image"
               type="file"
+              accept="image/*"
               onChange={(event) => {
                 if (
                   event.currentTarget.files &&
@@ -139,7 +145,8 @@ const AddProduct = () => {
                   formik.setFieldValue("image", event.currentTarget.files[0]);
                 }
               }}
-              className="border rounded-sm w-full"
+              className={`border text-xs p-[5px] text-gray-500 cursor-pointer hover:text-blue-500 hover:border-blue-500
+              ${formik.errors.image && formik.touched.image ? 'border-red-500' : 'border-gray-300'} rounded-sm w-full`}
             />
           {formik.errors.image && formik.touched.image && (
               <div className="text-red-500 text-xs">{formik.errors.image}</div>
@@ -148,10 +155,11 @@ const AddProduct = () => {
         </div>
         <div>
           <TextArea
-            name="description"
+            name="termsAndConditions"
             formik={formik}
-            placeholder="Description"
-            value={formik.values.description}
+            label="Terms and Conditions"
+            placeholder="Terms and Conditions"
+            value={formik.values.termsAndConditions}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />

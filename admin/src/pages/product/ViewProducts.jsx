@@ -4,7 +4,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-const AllProducts = () => {
+const ViewProducts = () => {
     const [allProducts, setAllProducts] = useState([]);
 
     useEffect(() => {
@@ -59,4 +59,4 @@ const AllProducts = () => {
     );
 };
 
-export default AllProducts;
+export default ViewProducts;

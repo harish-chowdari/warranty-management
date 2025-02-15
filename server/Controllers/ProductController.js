@@ -5,18 +5,14 @@ const S3 = require("../s3");
 
 async function createProduct(req, res) {
     try {
-        const response = await S3.uploadFile( 
+        const response = await S3.uploadFile(        
             process.env.AWS_BUCKET_NAME,
             req?.files?.image[0]
         );
 
-        const { name, brand, description, image, price, category, quantity } = req.body;
+        const { name, brand, termsAndConditions, image, price, category, quantity } = req.body; 
 
-        if ( !name || !brand || !description || !image || !price || !category || !quantity ) {
-            return res.json({ error: "Please fill all the fields" });
-        }
-
-        const data = new Product({ name, brand, description, image: response?.Location, price, category, quantity });
+        const data = new Product({ name, brand, termsAndConditions, image: response?.Location, price, category, quantity });
         const d = await data.save();
         if (d) {
             return res.status(200).json({ Added: "Product added successfully" });
@@ -74,10 +70,11 @@ const deleteProduct = async (req, res) => {
 
 
 
+
 module.exports = {
     createProduct,
     getAllProducts,
     getProductById,
     updateProduct,
-    deleteProduct
+    deleteProduct,
 }

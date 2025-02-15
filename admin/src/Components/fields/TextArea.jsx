@@ -22,10 +22,10 @@ const TextArea = ({
 
     return (
         <div className={`flex flex-col ${marginClass}`}>
-        <label htmlFor={name}>{label}</label>
+        <label className='text-xs mb-1' htmlFor={name}>{label}</label>
         <textarea 
             rows={rows}
-            className={`rounded-sm text-sm border disabled:cursor-not-allowed disabled:bg-gray-150 
+            className={`rounded-sm text-sm border disabled:cursor-not-allowed disabled:bg-gray-150 focus:outline-none
             ${((formik?.touched[`${name}`] && formik?.errors[`${name}`]))? 'border-red-600' : 
             `${(isHovered || isFocused)? 'border-blue-500' : 'border-gray-300'}`} 
             ${tailwindClasses}`}

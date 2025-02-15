@@ -5,6 +5,8 @@ import Signup from "./pages/auth/Signup";
 import PasswordReset from "./pages/auth/PasswordReset";
 import AddProduct from "./pages/product/AddProduct";
 import Layout from "./Components/Layout/Layout";
+import ViewProducts from "./pages/product/ViewProducts";
+import EditProduct from "./pages/product/EditProduct";
 
 
 const App = () => {
@@ -17,6 +19,8 @@ const App = () => {
         <Route path="/reset" element= {<PasswordReset/>} />
         <Route path="/home" element={<Layout />}>
             <Route path="add-product" element={<AddProduct />} />
+            <Route path="view-products" element={<ViewProducts />} />
+            <Route path="edit-product" element={<EditProduct />} />
         </Route>
       </Routes>
     </BrowserRouter>

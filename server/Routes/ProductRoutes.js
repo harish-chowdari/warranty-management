@@ -7,7 +7,7 @@ const {
     getAllProducts,
     getProductById,
     updateProduct,
-    deleteProduct
+    deleteProduct,
 } = require('../Controllers/ProductController');
 
 const { productUpload } = require("../multer");
@@ -27,5 +27,6 @@ router.put('/update-product/:id', updateProduct);
 
 // Delete a product by ID
 router.delete('/delete-product/:id', deleteProduct);
+
 
 module.exports = router;
