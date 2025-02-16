@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "../../axios";
-import styles from "./Signup.module.css";
 import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
@@ -29,7 +28,8 @@ const Signup = () => {
         setErrorMessage(res.data.AlreadyExist);
       } else {
         const userId = res.data._id;
-        navigate(`/home/all-products`);
+        localStorage.setItem("userId", userId);
+        navigate(`/home/view-products`);
       }
     } catch (error) {
       console.log(error);
@@ -39,10 +39,10 @@ const Signup = () => {
 
   return (
   
-    <div className={styles.container}>
-      <form onSubmit={handleSubmit} className={styles.formContainer}>
+    <div>
+      <form onSubmit={handleSubmit}>
         <h2>Signup</h2>
-        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+        {errorMessage && <p>{errorMessage}</p>}
 
         <div>
           <input
@@ -51,7 +51,6 @@ const Signup = () => {
             name="name"
             onChange={handleChange}
             value={signup.name}
-            className={styles.input}
           />
         </div>
         <div>
@@ -61,7 +60,6 @@ const Signup = () => {
             name="email"
             onChange={handleChange}
             value={signup.email}
-            className={styles.input}
           />
         </div>
         <div>
@@ -71,16 +69,15 @@ const Signup = () => {
             name="password"
             onChange={handleChange}
             value={signup.password}
-            className={styles.input}
           />
         </div>
 
-        <button type="submit" className={styles.button}>
+        <button type="submit">
           Submit
         </button>
-        <p className={styles.text}>
+        <p>
           Already have an account?{" "}
-          <Link to="/" className={styles.link}>
+          <Link to="/">
             Login
           </Link>
         </p>

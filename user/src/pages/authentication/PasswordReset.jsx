@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "../../axios";
 import { Link, useNavigate } from "react-router-dom";
-import styles from "./PasswordReset.module.css";
 
 const PasswordReset = () => {
   const [login, setLogin] = useState({ email: "", otp: "", newPassword: "" });
@@ -57,10 +56,10 @@ const PasswordReset = () => {
   };
 
   return (
-    <form className={styles.container} onSubmit={handleSubmit}>
-      <div className={styles.formContainer}>
+    <form onSubmit={handleSubmit}>
+      <div>
         <h2>Password Reset</h2>
-        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+        {errorMessage && <p >{errorMessage}</p>}
 
         <input
           placeholder="Enter Your Email"
@@ -68,7 +67,6 @@ const PasswordReset = () => {
           name="email"
           onChange={handleChange}
           value={login.email}
-          className={styles.input}
           required
         />
 
@@ -80,7 +78,6 @@ const PasswordReset = () => {
               name="otp"
               onChange={handleChange}
               value={login.otp}
-              className={styles.input}
               required
             />
 
@@ -90,19 +87,18 @@ const PasswordReset = () => {
               name="newPassword"
               onChange={handleChange}
               value={login.newPassword}
-              className={styles.input}
               required
             />
           </>
         )}
 
-        <button type="submit" className={styles.button}>
+        <button type="submit" >
           {isOTPSent ? "Reset Password" : "Send OTP"}
         </button>
 
-        <p className={styles.passwordText}>
+        <p>
           Remember your password?{" "}
-          <Link to="/" className={styles.link}>
+          <Link to="/">
             Login
           </Link>
         </p>

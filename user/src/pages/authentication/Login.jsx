@@ -26,7 +26,8 @@ const Login = () => {
         setErrorMessage(res.data.Incorrect);
       } else {
         const userId = res.data._id; 
-        navigate(`/home/all-products`);
+        localStorage.setItem("userId", userId);
+        navigate(`/home/view-products`);
       }
     } catch (error) {
       console.log(error);

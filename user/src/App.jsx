@@ -1,15 +1,18 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "./Components/Login/Login";
-import Signup from "./Components/Signup/Signup";
-import PasswordReset from "./Components/PasswordReset/PasswordReset";
-import Layout from "./Layout/Layout";
+
 import ViewCart from "./pages/product/ViewCart";
 import ViewProducts from "./pages/product/ViewProducts";
-
+import Login from "./pages/authentication/Login";
+import Signup from "./pages/authentication/Signup";
+import PasswordReset from "./pages/authentication/PasswordReset";
+import Layout from "./Components/Layout/Layout";
 
 
 const App = () => {
+
+  const isUserLoggedIn = localStorage.getItem("userId");
+
   return (
     <div>
     <BrowserRouter>
@@ -19,7 +22,7 @@ const App = () => {
             <Route path="/reset" element= {<PasswordReset/>} />
 
             <Route path="/home" element={<Layout />}>
-                <Route path="all-products" element={<ViewProducts />}/>
+                <Route path="view-products" element={<ViewProducts />}/>
                 <Route path="view-cart" element={<ViewCart />}/>
             </Route>
             </Routes>

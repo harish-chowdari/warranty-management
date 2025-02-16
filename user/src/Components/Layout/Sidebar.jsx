@@ -13,7 +13,7 @@ const Sidebar = () => {
     return (
         <div className="flex flex-col gap-4 pt-2">
             <NavLink
-            to={`/home/all-products`}
+            to={`/home/view-products`}
             className='px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600'
             >
             View Products
