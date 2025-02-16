@@ -68,7 +68,7 @@ const ViewProducts = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className=" bg-gray-100 p-6">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">All Products</h1>
       {error && <p className="text-red-500 text-center">{error}</p>}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

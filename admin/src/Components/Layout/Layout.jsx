@@ -6,18 +6,22 @@ import Navbar from './Navbar';
 const Layout = () => {
   return (
     <div className="flex flex-col h-screen">
-      <div className="fixed top-0 left-0 w-full z-50 bg-white shadow-md">
+      {/* Top Navbar: full width */}
+      <header className="w-full h-[9vh] shadow">
         <Navbar />
-      </div>
+      </header>
 
-      <div className="flex h-screen pt-[9vh]">
-        <div className="fixed left-0 top-[9vh] bg-white h-[calc(100vh-9vh)] w-[30vh] shadow-md">
+      {/* Main content area */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar */}
+        <aside className="">
           <Sidebar />
-        </div>
+        </aside>
 
-        <div className="ml-[30vh] flex-1 w-full bg-gray-100 h-[calc(100vh-9vh)] overflow-auto p-4">
+        {/* Outlet for main content */}
+        <main className="flex-1 p-4 h-[91vh] overflow-auto bg-gray-100">
           <Outlet />
-        </div>
+        </main>
       </div>
     </div>
   );
