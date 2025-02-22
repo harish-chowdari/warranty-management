@@ -7,6 +7,7 @@ import Login from "./pages/authentication/Login";
 import Signup from "./pages/authentication/Signup";
 import PasswordReset from "./pages/authentication/PasswordReset";
 import Layout from "./Components/Layout/Layout";
+import ProductDetails from "./pages/product/ProductDetails";
 
 
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
 
             <Route path="/home" element={<Layout />}>
                 <Route path="view-products" element={<ViewProducts />}/>
+                <Route path="product-details/:productId" element={<ProductDetails />}/>
                 <Route path="view-cart" element={<ViewCart />}/>
             </Route>
             </Routes>

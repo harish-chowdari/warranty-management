@@ -4,8 +4,10 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ViewProducts = () => {
+  const navigate = useNavigate();
   const [allProducts, setAllProducts] = useState([]);
   const [cart, setCart] = useState(null);
   const [error, setError] = useState(null);
@@ -202,7 +204,7 @@ const ViewProducts = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {currentProducts.map((product) => (
-          <div
+          <div 
             key={product._id}
             className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
           >
@@ -219,10 +221,10 @@ const ViewProducts = () => {
                 ))}
               </Slider>
             ) : (
-              <img
+              <img onClick={() => navigate(`/home/product-details/${product._id}`)}
                 src={product.image ? product.image[0] : ""}
                 alt={product.name}
-                className="w-full h-48 object-cover rounded-md"
+                className="w-full h-48 object-cover cursor-pointer rounded-md"
               />
             )}
             <h2 className="text-xl font-semibold text-gray-900 mt-4">
