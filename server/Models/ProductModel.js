@@ -5,12 +5,12 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    brand: {
+    modelNo: {
         type: String,
         required: true
     },
-    termsAndConditions: {
-        type: String,
+    mfgDate: {
+        type: Date,
         required: true
     },
     image: {
@@ -27,6 +27,18 @@ const ProductSchema = new mongoose.Schema({
     },
     quantity: {
         type: Number,
+        required: true
+    },
+    warrantyTermsAndConditions: {
+        type: String,
+        required: true
+    },
+    warrantyInDays: {
+        type: Number,
+        required: true
+    },
+    coverage: {
+        type: String,
         required: true
     }
 }, {timestamps: true});

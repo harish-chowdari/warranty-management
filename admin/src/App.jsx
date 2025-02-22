@@ -7,25 +7,25 @@ import AddProduct from "./pages/product/AddProduct";
 import Layout from "./Components/Layout/Layout";
 import ViewProducts from "./pages/product/ViewProducts";
 import EditProduct from "./pages/product/EditProduct";
+import { Toaster } from "react-hot-toast";
 
 
 const App = () => {
   return (
     <div>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element= {<Signup />} />
-        <Route path="/reset" element= {<PasswordReset/>} />
-        <Route path="/home" element={<Layout />}>
-            <Route path="add-product" element={<AddProduct />} />
-            <Route path="view-products" element={<ViewProducts />} />
-            <Route path="edit-product" element={<EditProduct />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-      
-      
+        <Toaster position="top-center" />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/signup" element= {<Signup />} />
+            <Route path="/reset" element= {<PasswordReset/>} />
+            <Route path="/home" element={<Layout />}>
+                <Route path="add-product" element={<AddProduct />} />
+                <Route path="view-products" element={<ViewProducts />} />
+                <Route path="edit-product/:productId" element={<EditProduct />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
     </div>
   );
 };

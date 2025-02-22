@@ -56,10 +56,13 @@ const PasswordReset = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <h2>Password Reset</h2>
-        {errorMessage && <p >{errorMessage}</p>}
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form onSubmit={handleSubmit} className="bg-white flex-col flex items-center justify-center shadow-lg rounded-2xl p-8 w-96">
+        <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">Password Reset</h2>
+
+        {errorMessage && (
+          <p className="text-red-500 text-sm text-center mb-3">{errorMessage}</p>
+        )}
 
         <input
           placeholder="Enter Your Email"
@@ -67,6 +70,7 @@ const PasswordReset = () => {
           name="email"
           onChange={handleChange}
           value={login.email}
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3"
           required
         />
 
@@ -78,6 +82,7 @@ const PasswordReset = () => {
               name="otp"
               onChange={handleChange}
               value={login.otp}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3"
               required
             />
 
@@ -87,23 +92,27 @@ const PasswordReset = () => {
               name="newPassword"
               onChange={handleChange}
               value={login.newPassword}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3"
               required
             />
           </>
         )}
 
-        <button type="submit" >
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-all"
+        >
           {isOTPSent ? "Reset Password" : "Send OTP"}
         </button>
 
-        <p>
+        <p className="text-sm text-gray-600 text-center mt-3">
           Remember your password?{" "}
-          <Link to="/">
+          <Link to="/" className="text-blue-500 hover:underline">
             Login
           </Link>
         </p>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 };
 

@@ -37,46 +37,58 @@ const Signup = () => {
   };
 
   return (
-  
-    <div>
-      <form onSubmit={handleSubmit}>
-        <h2>Signup</h2>
-        {errorMessage && <p>{errorMessage}</p>}
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white flex-col flex items-center justify-center shadow-lg rounded-2xl p-8 w-96"
+      >
+        <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
+          Signup
+        </h2>
+        {errorMessage && (
+          <p className="text-red-500 text-sm text-center mb-3">{errorMessage}</p>
+        )}
 
-        <div>
-          <input
-            placeholder="Enter Your Name"
-            type="text"
-            name="name"
-            onChange={handleChange}
-            value={signup.name}
-          />
-        </div>
-        <div>
-          <input
-            placeholder="Enter Your Email"
-            type="email"
-            name="email"
-            onChange={handleChange}
-            value={signup.email}
-          />
-        </div>
-        <div>
-          <input
-            placeholder="Enter Your Password"
-            type="password"
-            name="password"
-            onChange={handleChange}
-            value={signup.password}
-          />
-        </div>
+        <input
+          placeholder="Enter Your Name"
+          type="text"
+          name="name"
+          onChange={handleChange}
+          value={signup.name}
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3"
+          required
+        />
 
-        <button type="submit">
+        <input
+          placeholder="Enter Your Email"
+          type="email"
+          name="email"
+          onChange={handleChange}
+          value={signup.email}
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3"
+          required
+        />
+
+        <input
+          placeholder="Enter Your Password"
+          type="password"
+          name="password"
+          onChange={handleChange}
+          value={signup.password}
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3"
+          required
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-all"
+        >
           Submit
         </button>
-        <p>
+
+        <p className="text-sm text-gray-600 text-center mt-3">
           Already have an account?{" "}
-          <Link to="/">
+          <Link to="/" className="text-blue-500 hover:underline">
             Login
           </Link>
         </p>

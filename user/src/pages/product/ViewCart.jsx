@@ -77,7 +77,7 @@ const ViewCart = () => {
                     <div>
                         <h2 className="text-xl font-semibold">{item?.productId?.name}</h2>
                         <p className="text-gray-600">
-                            <span className="font-medium">Brand:</span> {item?.productId?.brand}
+                            <span className="font-medium">Category:</span> {item?.productId?.category}
                         </p>
                         <p className="text-gray-600">
                             <span className="font-medium">Price:</span> ${item?.productId?.price}
