@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../axios';
+import { toast } from "react-hot-toast";
 
 const ViewCart = () => {
     const [cart, setCart] = useState(null);
@@ -62,6 +63,20 @@ const ViewCart = () => {
         0
     );
 
+    const handleBuy = async (productId) => {
+        try {
+            const res = await axios.post(`/create-purchase/${productId}/${userId}`)
+            console.log(res?.data?.purchaseSuccess)
+            if(res?.data?.purchaseSuccess) {
+                toast.success("Order Placed Successfully")
+            }
+        }
+        catch (err) {
+        console.error("Error checking out:", err);
+        setError("Failed to checkout");
+        }
+    }
+
     return (
         <div className="max-w-5xl mx-auto p-6">
         <h1 className="text-3xl font-bold text-center mb-8">Your Shopping Cart</h1>
@@ -112,12 +127,19 @@ const ViewCart = () => {
                         Total: ${item?.productId?.price * item?.quantity}
                         </p>
                     </div>
+                    <div className="flex items-center justify-end mt-4">
+                    <button onClick={() => handleBuy(item?.productId?._id)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded transition duration-300"
+                    >   
+                        Buy
+                    </button>
+                    </div>
                 </div>
             </div>
             ))}
             </div>
 
-            <div className="mt-10 border-t pt-6 text-right">
+            {/* <div className="mt-10 border-t pt-6 text-right">
                 <p className="text-lg">
                 <span className="font-medium">Total Items:</span> {totalItems}
                 </p>
@@ -127,7 +149,7 @@ const ViewCart = () => {
                 <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded transition duration-300">
                 Proceed to Checkout
                 </button>
-            </div>
+            </div> */}
         </div>
     );
 };

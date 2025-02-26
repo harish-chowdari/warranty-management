@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { toast } from "react-hot-toast"; // Make sure <Toaster /> is rendered in your app root
-
+import { toast } from "react-hot-toast";
 import axios from "../../axios";
 import Input from "../../Components/fields/Input";
 import TextArea from "../../Components/fields/TextArea";

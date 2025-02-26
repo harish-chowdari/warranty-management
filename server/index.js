@@ -23,6 +23,9 @@ app.use("/api", ProductRouter)
 const CartRouter = require("./Routes/CartRoutes")
 app.use("/api", CartRouter)
 
+const PurchaseRoutes = require("./Routes/PurchasesRoutes")
+app.use("/api", PurchaseRoutes)
+
 const port = process.env.PORT || 3000
 
 

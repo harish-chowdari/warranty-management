@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaBoxOpen, FaChevronLeft, FaChevronRight, FaList, } from "react-icons/fa";
-import { MdSecurity } from "react-icons/md"; // Warranty icon
+import { MdSecurity, MdQrCodeScanner  } from "react-icons/md";
 
 const Sidebar = () => {
     const userId = localStorage.getItem("userId");
@@ -33,6 +33,22 @@ const Sidebar = () => {
                     >
                         <FaList size={18} />
                         {isOpen && <span>View Products</span>}
+                    </NavLink>
+
+                    {/* view purchases */}
+                    <NavLink to="/home/view-purchases"
+                    className={`flex ${!isOpen && "mx-auto"} items-center gap-2 p-2 hover:bg-gray-700 rounded-md transition duration-300`}
+                    >
+                        <FaBoxOpen size={18} />
+                        {isOpen && <span>View Purchases</span>}
+                    </NavLink>
+
+                    {/* Scanner */}
+                    <NavLink to="/home/scanner"
+                    className={`flex ${!isOpen && "mx-auto"} items-center gap-2 p-2 hover:bg-gray-700 rounded-md transition duration-300`}
+                    >
+                        <MdQrCodeScanner  size={18} />
+                        {isOpen && <span>Scanner</span>}
                     </NavLink>
 
                     <NavLink to="/home/view-warranties"

@@ -8,6 +8,10 @@ import Signup from "./pages/authentication/Signup";
 import PasswordReset from "./pages/authentication/PasswordReset";
 import Layout from "./Components/Layout/Layout";
 import ProductDetails from "./pages/product/ProductDetails";
+import ViewPurchases from "./pages/product/ViewPurchases";
+import Scanner from "./pages/product/Scanner";
+import ViewWarranties from "./pages/product/ViewWarranties";
+import { Toaster } from "react-hot-toast";
 
 
 const App = () => {
@@ -16,19 +20,24 @@ const App = () => {
 
   return (
     <div>
-    <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/signup" element= {<Signup />} />
-            <Route path="/reset" element= {<PasswordReset/>} />
+        <Toaster position="top-center" />
 
-            <Route path="/home" element={<Layout />}>
-                <Route path="view-products" element={<ViewProducts />}/>
-                <Route path="product-details/:productId" element={<ProductDetails />}/>
-                <Route path="view-cart" element={<ViewCart />}/>
-            </Route>
-            </Routes>
-    </BrowserRouter>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/signup" element= {<Signup />} />
+                <Route path="/reset" element= {<PasswordReset/>} />
+
+                <Route path="/home" element={<Layout />}>
+                    <Route path="view-products" element={<ViewProducts />}/>
+                    <Route path="product-details/:productId" element={<ProductDetails />}/>
+                    <Route path="view-cart" element={<ViewCart />}/>
+                    <Route path="view-purchases" element={<ViewPurchases/>}/>
+                    <Route path="scanner" element={<Scanner />}/>
+                    <Route path="view-warranties" element={<ViewWarranties/>}/>
+                </Route>
+                </Routes>
+        </BrowserRouter>
       
       
     </div>
