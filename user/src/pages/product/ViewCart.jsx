@@ -3,17 +3,17 @@ import axios from '../../axios';
 import { toast } from "react-hot-toast";
 
 const ViewCart = () => {
-    const [cart, setCart] = useState(null);
+    const [cart, setCart] = useState([]);
     const [error, setError] = useState(null);
     const userId = localStorage.getItem("userId");
 
     const fetchCart = async () => {
         try {
         const response = await axios.get(`/cart/${userId}`);
-        setCart(response?.data);
+        setCart(response?.data || []);
         } catch (err) {
         console.error("Error fetching cart:", err);
-        setError("Failed to load cart");
+        // setError("Failed to load cart");
         }
     };
     useEffect(() => {
@@ -41,18 +41,18 @@ const ViewCart = () => {
         }
     };
 
-    if (error) {
-        return (
-        <div className="flex justify-center items-center h-screen">
-            <p className="text-red-500 text-lg">{error}</p>
-        </div>
-        );
-    }
+    // if (error) {
+    //     return (
+    //     <div className="flex justify-center items-center h-screen">
+    //         <p className="text-red-500 text-lg">{error}</p>
+    //     </div>
+    //     );
+    // }
 
-    if (!cart) {
+    if (cart?.length === 0) {
         return (
         <div className="flex justify-center items-center h-screen">
-            <p className="text-gray-600 text-lg">Loading...</p>
+            <p className="text-gray-600 text-lg">Your cart is empty...</p>
         </div>
         );
     }
@@ -129,7 +129,7 @@ const ViewCart = () => {
                     </div>
                     <div className="flex items-center justify-end mt-4">
                     <button onClick={() => handleBuy(item?.productId?._id)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded transition duration-300"
+                        className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white py-2 px-6 rounded transition duration-300"
                     >   
                         Buy
                     </button>

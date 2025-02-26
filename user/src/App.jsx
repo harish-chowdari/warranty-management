@@ -12,6 +12,7 @@ import ViewPurchases from "./pages/product/ViewPurchases";
 import Scanner from "./pages/product/Scanner";
 import ViewWarranties from "./pages/product/ViewWarranties";
 import { Toaster } from "react-hot-toast";
+import ClaimWarranty from "./pages/product/ClaimWarranty";
 
 
 const App = () => {
@@ -34,6 +35,7 @@ const App = () => {
                     <Route path="view-cart" element={<ViewCart />}/>
                     <Route path="view-purchases" element={<ViewPurchases/>}/>
                     <Route path="scanner" element={<Scanner />}/>
+                    <Route path="claim-warranty" element={<ClaimWarranty/>}/>
                     <Route path="view-warranties" element={<ViewWarranties/>}/>
                 </Route>
                 </Routes>
