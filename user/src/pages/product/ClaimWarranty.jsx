@@ -4,13 +4,12 @@ import { useParams } from "react-router-dom";
 
 const ClaimWarranty = () => {
 //   const { productId } = useParams();
-  const productId = '67b16c8c49ff55062c2e9494'
+  const productId = '67bf19e78595984b814d2549'
   const userId = localStorage.getItem("userId");
   const [purchaseDate, setPurchaseDate] = useState("");
   const [purchaseProof, setPurchaseProof] = useState(null);
   const [message, setMessage] = useState("");
 
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

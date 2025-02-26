@@ -55,14 +55,11 @@ const ViewPurchases = () => {
                             <p className="text-sm text-gray-600">
                             Quantity: {product.quantity}
                             </p>
+                            <p className="text-sm text-gray-600">
+                            Warranty: {product?.productId?.warrantyInDays ? product?.productId?.warrantyInDays + ' Days' : 'N/A'}
+                            </p>
                         </div>
                         </div>
-                        <button 
-                            onClick={() => claimWarranty(purchase._id, product.productId._id)}
-                            className="mt-3 cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-                        >
-                        Claim Warranty
-                        </button>
                     </div>
                     ))}
                 </div>
