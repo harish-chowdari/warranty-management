@@ -8,6 +8,8 @@ import Layout from "./Components/Layout/Layout";
 import ViewProducts from "./pages/product/ViewProducts";
 import EditProduct from "./pages/product/EditProduct";
 import { Toaster } from "react-hot-toast";
+import GenerateQr from "./pages/product/GenerateQr";
+import DownloadQr from "./pages/product/DownloadQr";
 
 
 const App = () => {
@@ -23,6 +25,8 @@ const App = () => {
                 <Route path="add-product" element={<AddProduct />} />
                 <Route path="view-products" element={<ViewProducts />} />
                 <Route path="edit-product/:productId" element={<EditProduct />} />
+                <Route path="generate-qr" element={<GenerateQr />} />
+                <Route path="download-qr" element={<DownloadQr />} />
             </Route>
           </Routes>
         </BrowserRouter>

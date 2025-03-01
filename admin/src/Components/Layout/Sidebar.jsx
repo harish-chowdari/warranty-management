@@ -50,11 +50,19 @@ const Sidebar = () => {
           </NavLink>
           
           <NavLink
-            to="/home/edit-product"
+            to="/home/generate-qr"
             className={`flex ${!isOpen && "mx-auto"} items-center gap-2 p-2 hover:bg-gray-700 rounded-md transition duration-300`}
           >
             <FaPencilAlt size={18} />
-            {isOpen && <span>Edit Product</span>}
+            {isOpen && <span>Generate Qr</span>}
+          </NavLink>
+          {/* download qr */}
+          <NavLink
+            to="/home/download-qr"
+            className={`flex ${!isOpen && "mx-auto"} items-center gap-2 p-2 hover:bg-gray-700 rounded-md transition duration-300`}
+          >
+            <FaPencilAlt size={18} />
+            {isOpen && <span>Download Qr</span>}
           </NavLink>
         </nav>
       </div>

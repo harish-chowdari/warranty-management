@@ -29,6 +29,9 @@ app.use("/api", PurchaseRoutes)
 const warrantyRoutes = require("./Routes/WarrantyRoutes")
 app.use("/api", warrantyRoutes)
 
+const qrRoutes = require("./Routes/QrRoutes")
+app.use("/api", qrRoutes)
+
 const port = process.env.PORT || 3000
 
 
