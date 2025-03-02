@@ -63,7 +63,19 @@ const getAllPurchases = async (req, res) => {
 };
 
 
+const getEveryPurchase = async (req, res) => {
+    try {
+        const purchases = await PurchasesModel.find();
+        return res.json(purchases);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+
 module.exports = {
     createPurchase,
-    getAllPurchases
+    getAllPurchases,
+    getEveryPurchase
 };

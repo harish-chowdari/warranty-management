@@ -11,6 +11,7 @@ const {
 } = require('../Controllers/ProductController');
 
 const { productUpload } = require("../multer");
+const { getEveryPurchase } = require('../Controllers/PurchasesController');
 
 
 // Create a new product
@@ -27,6 +28,8 @@ router.put('/edit-product/:productId', productUpload, editProduct);
 
 // Delete a product by ID
 router.delete('/delete-product/:id', deleteProduct);
+
+router.get('/get-every-purchases', getEveryPurchase);
 
 
 module.exports = router;

@@ -7,13 +7,14 @@ import { Link } from "react-router-dom";
 
 const ViewProducts = () => {
   const [allProducts, setAllProducts] = useState([]);
+  const [allPurchased, setAllPurchased] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [sortOption, setSortOption] = useState("default");
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 5;
-
-
+  
+  // Fetch all products
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
@@ -26,13 +27,26 @@ const ViewProducts = () => {
     fetchAllProducts();
   }, []);
 
+  // Fetch all purchases for aggregation
+  useEffect(() => {
+    const fetchAllPurchases = async () => {
+      try {
+        const response = await axios.get("/get-every-purchases");
+        setAllPurchased(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchAllPurchases();
+  }, []);
 
+  // Get unique categories for filtering
   const categories = useMemo(() => {
     const cats = allProducts.map((product) => product.category);
     return ["All Categories", ...new Set(cats)];
   }, [allProducts]);
 
-
+  // Filter products by category and search query
   const filteredProducts = useMemo(() => {
     return allProducts.filter((product) => {
       const matchesCategory =
@@ -45,7 +59,7 @@ const ViewProducts = () => {
     });
   }, [allProducts, selectedCategory, searchQuery]);
 
-
+  // Sort the filtered products
   const sortedProducts = useMemo(() => {
     const products = [...filteredProducts];
     switch (sortOption) {
@@ -66,14 +80,14 @@ const ViewProducts = () => {
     }
   }, [filteredProducts, sortOption]);
 
-
+  // Pagination logic
   const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
   const currentProducts = useMemo(() => {
     const startIndex = (currentPage - 1) * productsPerPage;
     return sortedProducts.slice(startIndex, startIndex + productsPerPage);
   }, [sortedProducts, currentPage]);
 
-
+  // Slider settings for products with multiple images
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -85,11 +99,21 @@ const ViewProducts = () => {
     autoplaySpeed: 2000,
   };
 
-
   const handlePageChange = (page) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
   };
+
+  // Aggregate purchased quantities for each product
+  // This creates an object mapping productId (string) to the total quantity purchased.
+  const aggregatedQuantities = {};
+  allPurchased?.forEach((purchase) => {
+    purchase.products.forEach((product) => {
+      const { productId, quantity } = product;
+      aggregatedQuantities[productId] = (aggregatedQuantities[productId] || 0) + quantity;
+    });
+  });
+  console.log(aggregatedQuantities, "aggregated quantities");
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -134,58 +158,71 @@ const ViewProducts = () => {
           <option value="nameZA">Name: Z-A</option>
         </select>
         <button
-            onClick={() => {
-              setSearchQuery("");
-              setSelectedCategory("All Categories");
-              setSortOption("default");
-              setCurrentPage(1);
-            }}  
-            className="flex items-center cursor-pointer px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-300"
-          >
-            Clear Filters
-          </button>
+          onClick={() => {
+            setSearchQuery("");
+            setSelectedCategory("All Categories");
+            setSortOption("default");
+            setCurrentPage(1);
+          }}
+          className="flex items-center cursor-pointer px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-300"
+        >
+          Clear Filters
+        </button>
       </div>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {currentProducts?.map((product) => (
-          <div
-            key={product?._id}
-            className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
-          >
-            {product?.image?.length > 1 ? (
-              <Slider {...sliderSettings}>
-                {product?.image.map((image, index) => (
-                  <div key={index}>
-                    <img
-                      src={image}
-                      alt={product?.name}
-                      className="w-full h-48 object-cover rounded-md"
-                    />
-                  </div>
-                ))}
-              </Slider>
-            ) : (
-              <img
-                src={product?.image[0]}
-                alt={product?.name}
-                className="w-full h-48 object-cover rounded-md"
-              />
-            )}
-            <h2 className="text-xl font-semibold text-gray-900 mt-4">
-              {product?.name}
-            </h2>
-            <p className="text-gray-600 mt-2">{product?.description}</p>
-            <p className="text-lg font-bold text-green-600 mt-2">
-              ${product?.price}
-            </p>
-            <Link
-              to={`/home/edit-product/${product?._id}`}
-              className="mt-4 block bg-blue-600 text-white py-2 text-center rounded-md hover:bg-blue-700 transition"
+        {currentProducts?.map((product) => {
+          // For each product, we display the total product count (from product.quantity)
+          // and the available product count, calculated as:
+          // available = product.quantity - aggregated purchased quantity (if any)
+          const totalProductCount = product.quantity;
+          const purchasedCount = aggregatedQuantities[product._id] || 0;
+          const availableCount = totalProductCount - purchasedCount;
+          
+          return (
+            <div
+              key={product?._id}
+              className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
             >
-              Edit
-            </Link>
-          </div>
-        ))}
+              {product?.image?.length > 1 ? (
+                <Slider {...sliderSettings}>
+                  {product?.image.map((image, index) => (
+                    <div key={index}>
+                      <img
+                        src={image}
+                        alt={product?.name}
+                        className="w-full h-48 object-cover rounded-md"
+                      />
+                    </div>
+                  ))}
+                </Slider>
+              ) : (
+                <img
+                  src={product?.image[0]}
+                  alt={product?.name}
+                  className="w-full h-48 object-cover rounded-md"
+                />
+              )}
+              <h2 className="text-xl font-semibold text-gray-900 mt-4">
+                {product?.name}
+              </h2>
+              <p className="text-gray-600 mt-2">{product?.description}</p>
+              {/* New display: Total and Available counts */}
+              <p className="text-sm text-gray-700 mt-2">
+                Total: {totalProductCount} | Available: {availableCount}
+              </p>
+              <p className="text-lg font-bold text-green-600 mt-2">
+                ${product?.price}
+              </p>
+              <Link
+                to={`/home/edit-product/${product?._id}`}
+                className="mt-4 block bg-blue-600 text-white py-2 text-center rounded-md hover:bg-blue-700 transition"
+              >
+                Edit
+              </Link>
+            </div>
+          );
+        })}
         {currentProducts.length === 0 && (
           <p className="text-center text-gray-600 mt-4">No products found.</p>
         )}
@@ -195,7 +232,7 @@ const ViewProducts = () => {
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`px-3 py-1  rounded border ${
+          className={`px-3 py-1 rounded border ${
             currentPage === 1
               ? "text-gray-400 border-gray-300"
               : "text-blue-600 cursor-pointer border-blue-600 hover:bg-blue-100"
@@ -212,7 +249,7 @@ const ViewProducts = () => {
               className={`px-3 py-1 rounded border ${
                 currentPage === page
                   ? "bg-blue-600 text-white border-blue-600"
-                  : "text-blue-600 cursor-pointer border-blue-600  hover:bg-blue-100"
+                  : "text-blue-600 cursor-pointer border-blue-600 hover:bg-blue-100"
               }`}
             >
               {page}
