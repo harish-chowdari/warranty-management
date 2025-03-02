@@ -35,7 +35,7 @@ const App = () => {
                     <Route path="view-cart" element={<ViewCart />}/>
                     <Route path="view-purchases" element={<ViewPurchases/>}/>
                     <Route path="scanner" element={<Scanner />}/>
-                    <Route path="claim-warranty" element={<ClaimWarranty/>}/>
+                    <Route path="claim-warranty/:productId" element={<ClaimWarranty/>}/>
                     <Route path="view-warranties" element={<ViewWarranties/>}/>
                 </Route>
                 </Routes>
