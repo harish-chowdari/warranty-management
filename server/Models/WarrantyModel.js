@@ -10,6 +10,9 @@ const WarrantySchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Product'
         },
+        qrCode: {
+            type: String
+        },
         purchaseProof: {
             type: String
         },

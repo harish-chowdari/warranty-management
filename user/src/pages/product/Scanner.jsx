@@ -27,8 +27,8 @@ const QrCodeScanner = () => {
     const fetchAllPurchases = async () => {
       try {
         const response = await axiosInstance.get(`/all-purchases/${userId}`);
-        const purchases = response.data;
-        if (!purchases || purchases.length === 0) {
+        const purchases = response?.data;
+        if (!purchases || purchases?.length === 0) {
           setResponseText("You have not bought any products. Please purchase a product to claim warranty.");
           return;
         }
@@ -38,10 +38,21 @@ const QrCodeScanner = () => {
           console.log(exists);
           return exists;
         });
+
+        const isClaimed = await axiosInstance.get(`/get-claimed-qrs`);
+        const claimedQrs = isClaimed?.data;
+
+        const isClaimedExists = claimedQrs.some((item) => item.qrCode === scanResult);
+
+        if (isClaimedExists) {
+          setResponseText("This QR code has already been claimed.");
+          return;
+        }
+
         console.log(productExists, "productExists");
         if (productExists) {
           setResponseText("");
-          navigate(`/home/claim-warranty/${scanResult?.slice(0, 24)}`);
+          navigate(`/home/claim-warranty/${scanResult}`);
         } else {
           setResponseText("You have not bought the product. Please purchase it to claim the warranty.");
         }
@@ -85,9 +96,9 @@ const QrCodeScanner = () => {
           Close Scanner
         </button>
       )}
-      {scanResult && (
+      {/* {scanResult && (
         <p className="mt-4 text-lg text-gray-700">Scanned Text: {scanResult}</p>
-      )}
+      )} */}
       {responseText && (
         <p className="mt-4 text-lg text-red-500">{responseText}</p>
       )}

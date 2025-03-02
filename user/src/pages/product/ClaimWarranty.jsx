@@ -3,8 +3,7 @@ import axios from "../../axios";
 import { useParams } from "react-router-dom";
 
 const ClaimWarranty = () => {
-//   const { productId } = useParams();
-  const productId = '67bf19e78595984b814d2549'
+  const { productId } = useParams();
   const userId = localStorage.getItem("userId");
   const [purchaseDate, setPurchaseDate] = useState("");
   const [purchaseProof, setPurchaseProof] = useState(null);
@@ -14,10 +13,11 @@ const ClaimWarranty = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
+    formData.append("qrCode", productId);
     formData.append("purchaseDate", purchaseDate);
     formData.append("purchaseProof", purchaseProof);
     try {
-      const res = await axios.post(`/claim-warranty/${productId}/${userId}`, formData, {
+      const res = await axios.post(`/claim-warranty/${productId?.slice(0, 24)}/${userId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
       setMessage(res.data.message);
@@ -29,6 +29,7 @@ const ClaimWarranty = () => {
   return (
     <div className="container mx-auto p-4 max-w-md">
       <h1 className="text-2xl font-bold mb-4">Claim Warranty</h1>
+      
       {message && <div className="mb-4 text-center text-green-600">{message}</div>}
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div className="mb-4">

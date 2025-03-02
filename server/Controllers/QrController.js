@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const QRModel = require("../Models/QrModel");
+const ClaimedQrs = require('../Models/ClaimedQrs');
 
 const createQr = async (req, res) => {
   try {
@@ -64,7 +65,22 @@ const getQrs = async (req, res) => {
 };
 
 
+const getClaimedQrs = async (req, res) => {
+  try {
+    const qrDocument = await ClaimedQrs.find()
+    if (!qrDocument) {
+      return res.status(404).json({ error: 'QR document not found' });
+    }
+    return res.status(200).json(qrDocument);
+  } catch (error) {
+    console.error("Error fetching QR codes:", error);
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+
 module.exports = {
   createQr,
-  getQrs
+  getQrs,
+  getClaimedQrs
 };

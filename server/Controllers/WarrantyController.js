@@ -5,31 +5,52 @@ const S3 = require("../s3");
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
 const Emails = require('../Models/EmailsModel'); 
+const ClaimedQrs = require('../Models/ClaimedQrs');
 
 
 
 const claimWarranty = async (req, res) => {
   try {
     const { userId, productId } = req.params;
-    const { purchaseDate } = req.body;
+    const { qrCode, purchaseDate } = req.body;
     if (!req.file) {
       return res.status(400).json({ message: "Purchase proof file is required" });
     }
     const response = await S3.uploadFile(process.env.AWS_BUCKET_NAME, req.file);
     const product = await Product.findById(productId);
+
     if (!product) return res.status(404).json({ message: "Product not found" });
     const user = await User.findById(userId);
+
     if (!user) return res.status(404).json({ message: "User not found" });
     let warrantyRecord = await Warranty.findOne({ userId });
+
+    const userWarrantyClaim = await Warranty.findOne({ userId, "warranties.qrCode": qrCode });
+    if (userWarrantyClaim) {
+      return res.status(200).json({ message: "You have already claimed warranty for this QR code" });
+    }
+
+    const alreadyClaimed = await ClaimedQrs.findOne({ qrCode });
+
+    if(alreadyClaimed) {
+      return res.status(200).json({ message: "Warranty already claimed for this QR code by someone" });
+    }
+
     if (warrantyRecord) {
-      warrantyRecord.warranties.push({ productId, purchaseProof: response.Location, purchaseDate });
+      warrantyRecord.warranties.push({ productId, purchaseProof: response.Location, qrCode, purchaseDate });
       await warrantyRecord.save();
+      const data = new ClaimedQrs({ qrCode });
+      await data.save();
       return res.status(200).json({ message: "Warranty claim successful", warranty: warrantyRecord });
-    } else {
+    } 
+    
+    else {
       const newWarrantyRecord = new Warranty({
         userId,
-        warranties: [{ productId, purchaseProof: response.Location, purchaseDate }]
+        warranties: [{ productId, purchaseProof: response.Location, qrCode, purchaseDate }]
       });
+      const data = new ClaimedQrs({ qrCode });
+      await data.save();
       await newWarrantyRecord.save();
       return res.status(200).json({ message: "Warranty claim successful", warranty: newWarrantyRecord });
     }
