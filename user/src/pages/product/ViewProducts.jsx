@@ -3,13 +3,13 @@ import axios from "../../axios";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ViewProducts = () => {
   const navigate = useNavigate();
   const [allProducts, setAllProducts] = useState([]);
   const [cart, setCart] = useState(null);
+  const [allPurchased, setAllPurchased] = useState([]);
   const [error, setError] = useState(null);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,6 +20,7 @@ const ViewProducts = () => {
 
   const userId = localStorage.getItem("userId");
 
+  // Fetch products, cart and aggregated purchase data
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
@@ -40,15 +41,40 @@ const ViewProducts = () => {
       }
     };
 
-    fetchAllProducts();
-    fetchCart();
+    const fetchAllPurchases = async () => {
+      try {
+        const response = await axios.get("/get-every-purchases");
+        setAllPurchased(response.data);
+      } catch (error) {
+        console.error("Error fetching purchases:", error);
+      }
+    };
+
+    if (userId) {
+      fetchAllProducts();
+      fetchCart();
+      fetchAllPurchases();
+    }
   }, [userId]);
 
+  // Calculate aggregated purchased quantities for each product.
+  // This object maps product IDs to the total purchased count.
+  const aggregatedQuantities = {};
+  allPurchased.forEach((purchase) => {
+    purchase.products.forEach((item) => {
+      const { productId, quantity } = item;
+      aggregatedQuantities[productId] =
+        (aggregatedQuantities[productId] || 0) + quantity;
+    });
+  });
+
+  // Compute categories from products for filtering.
   const categories = useMemo(() => {
     const cats = allProducts.map((product) => product.category);
     return ["All Categories", ...new Set(cats)];
   }, [allProducts]);
 
+  // Filter products based on search query and selected category.
   const filteredProducts = useMemo(() => {
     return allProducts.filter((product) => {
       const matchesCategory =
@@ -61,6 +87,7 @@ const ViewProducts = () => {
     });
   }, [allProducts, selectedCategory, searchQuery]);
 
+  // Sort products based on selected sort option.
   const sortedProducts = useMemo(() => {
     const products = [...filteredProducts];
     switch (sortOption) {
@@ -103,46 +130,40 @@ const ViewProducts = () => {
     setCurrentPage(page);
   };
 
-  useEffect(() => {
-    const fetchAllProducts = async () => {
-      try {
-        const response = await axios.get('/all-products');
-        setAllProducts(response?.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchAllProducts();
-    fetchCart();
-  }, []);
-
-  const fetchCart = async () => {
-    try {
-      const response = await axios.get(`/cart/${userId}`);
-      setCart(response?.data);
-    } catch (err) {
-      console.error("Error fetching cart:", err);
-      setError("Failed to load cart");
-    }
-  };
-
+  // Optimistic update: update local cart state immediately on "Add to Cart"
   const handleAddToCart = async (productId) => {
     try {
-      const response = await axios.post(`/add-to-cart/${productId}/${userId}`, {
-        quantity: 1,
+      setCart((prevCart) => {
+        if (!prevCart || !prevCart.products) {
+          return { products: [{ productId: { _id: productId }, quantity: 1 }] };
+        }
+        // If product already exists, don't add it again
+        if (prevCart.products.some((item) => item?.productId?._id === productId)) {
+          return prevCart;
+        }
+        return {
+          ...prevCart,
+          products: [
+            ...prevCart.products,
+            { productId: { _id: productId }, quantity: 1 },
+          ],
+        };
       });
-      setCart(response?.data);
-      fetchCart();
+
+      // Make API call to add the product to the cart.
+      await axios.post(`/add-to-cart/${productId}/${userId}`, { quantity: 1 });
+      // Optionally re-fetch cart to ensure sync:
+      // await fetchCart();
     } catch (err) {
       console.error("Error adding product to cart:", err);
       setError("Failed to update cart");
     }
   };
 
+  // Checks whether a product is already in the cart.
   const isProductInCart = (productId) => {
-    if (!cart || !cart?.products) return false;
-    return cart?.products?.some(
+    if (!cart || !cart.products) return false;
+    return cart.products.some(
       (item) => item?.productId?._id === productId
     );
   };
@@ -203,56 +224,71 @@ const ViewProducts = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {currentProducts.map((product) => (
-          <div 
-            key={product._id}
-            className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
-          >
-            {product.image && product.image.length > 1 ? (
-              <Slider {...sliderSettings}>
-                {product.image.map((img, index) => (
-                  <div key={index}>
-                    <img
-                      src={img}
-                      alt={product.name}
-                      className="w-full h-48 object-cover rounded-md"
-                    />
-                  </div>
-                ))}
-              </Slider>
-            ) : (
-              <img onClick={() => navigate(`/home/product-details/${product._id}`)}
-                src={product.image ? product.image[0] : ""}
-                alt={product.name}
-                className="w-full h-48 object-cover cursor-pointer rounded-md"
-              />
-            )}
-            <h2 className="text-xl font-semibold text-gray-900 mt-4">
-              {product.name}
-            </h2>
-            <p className="text-gray-600 mt-2">{product.termsAndConditions}</p>
-            <p className="text-lg font-bold text-green-600 mt-2">
-              ${product.price}
-            </p>
-            <div>
-              <button
-                className={`mt-4 w-full cursor-pointer ${
-                  isProductInCart(product._id)
-                    ? "bg-gray-700"
-                    : "bg-green-600 hover:bg-green-700"
-                } text-white py-2 rounded-md transition`}
-              >
-                {isProductInCart(product._id) ? (
-                  <Link to="/home/view-cart">View Cart</Link>
+        {currentProducts.map((product) => {
+          // Calculate remaining stock for each product.
+          const totalPurchased = aggregatedQuantities[product._id] || 0;
+          const remainingStock = product.quantity - totalPurchased;
+          const isOutOfStock = remainingStock <= 0;
+
+          return (
+            <div 
+              key={product._id}
+              className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
+            >
+              {product.image && product.image.length > 1 ? (
+                <Slider {...sliderSettings}>
+                  {product.image.map((img, index) => (
+                    <div key={index}>
+                      <img
+                        src={img}
+                        alt={product.name}
+                        className="w-full h-48 object-cover rounded-md"
+                      />
+                    </div>
+                  ))}
+                </Slider>
+              ) : (
+                <img
+                  onClick={() => navigate(`/home/product-details/${product._id}`)}
+                  src={product.image ? product.image[0] : ""}
+                  alt={product.name}
+                  className="w-full h-48 object-cover cursor-pointer rounded-md"
+                />
+              )}
+              <h2 className="text-xl font-semibold text-gray-900 mt-4">
+                {product.name}
+              </h2>
+              <p className="text-gray-600 mt-2">{product.termsAndConditions}</p>
+              <p className="text-lg font-bold text-green-600 mt-2">
+                ${product.price}
+              </p>
+              <div>
+                {isOutOfStock ? (
+                  <button
+                    disabled
+                    className="mt-4 w-full cursor-not-allowed bg-gray-500 text-white py-2 rounded-md"
+                  >
+                    Out of Stock
+                  </button>
+                ) : isProductInCart(product._id) ? (
+                  <button
+                    disabled
+                    className="mt-4 w-full cursor-not-allowed bg-green-500 text-white py-2 rounded-md"
+                  >
+                    Already Added to Cart
+                  </button>
                 ) : (
-                  <span onClick={() => handleAddToCart(product._id)}>
+                  <button
+                    onClick={() => handleAddToCart(product._id)}
+                    className="mt-4 w-full cursor-pointer bg-green-600 hover:bg-green-700 text-white py-2 rounded-md transition"
+                  >
                     Add to Cart
-                  </span>
+                  </button>
                 )}
-              </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         {currentProducts.length === 0 && (
           <p className="text-center text-gray-600 mt-4">No products found.</p>
         )}

@@ -1,24 +1,83 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from '../../axios';
+import { toast } from "react-hot-toast";
 
 const ProductDetails = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
+  const [cart, setCart] = useState(null);
+  const [allPurchased, setAllPurchased] = useState([]);
+  const userId = localStorage.getItem("userId");
 
+  // Fetch product details
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
         const response = await axios.get(`/product/${productId}`);
-        setProduct(response.data);
-        console.log("Product details:", response.data);
+        setProduct(response?.data);
       } catch (error) {
         console.error("Error fetching product details:", error);
       }
     };
-
     fetchProductDetails();
   }, [productId]);
+
+  // Fetch user's cart
+  const fetchCart = async () => {
+    try {
+      const response = await axios.get(`/cart/${userId}`);
+      setCart(response?.data);
+    } catch (err) {
+      console.error("Error fetching cart:", err);
+    }
+  };
+
+  // Fetch aggregated purchases for stock calculation
+  const fetchAllPurchases = async () => {
+    try {
+      const response = await axios.get(`/get-every-purchases`);
+      setAllPurchased(response?.data || []);
+    } catch (err) {
+      console.error("Error fetching purchases:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      fetchCart();
+      fetchAllPurchases();
+    }
+  }, [userId]);
+
+  // Calculate aggregated quantities for products
+  const aggregatedQuantities = {};
+  allPurchased.forEach(purchase => {
+    purchase.products.forEach(item => {
+      const { productId: pId, quantity } = item;
+      aggregatedQuantities[pId] = (aggregatedQuantities[pId] || 0) + quantity;
+    });
+  });
+
+  // Determine remaining stock using aggregated purchased count
+  const totalPurchased = product ? aggregatedQuantities[product._id] || 0 : 0;
+  const remainingStock = product ? product.quantity - totalPurchased : 0;
+  const isOutOfStock = remainingStock <= 0;
+
+  // Check if the product is already in the user's cart
+  const isInCart = cart?.products?.some(item => item.productId._id === product?._id);
+
+  // Handler for adding to cart
+  const handleAddToCart = async () => {
+    try {
+      await axios.post(`/add-to-cart/${productId}/${userId}`, { quantity: 1 });
+      toast.success("Product added to cart");
+      fetchCart(); // update the cart after adding
+    } catch (err) {
+      console.error("Error adding product to cart:", err);
+      toast.error("Failed to add product to cart");
+    }
+  };
 
   if (!product) {
     return (
@@ -28,7 +87,7 @@ const ProductDetails = () => {
     );
   }
 
-  // Use the first image in the array if available, otherwise a placeholder
+  // Use the first image if available, else a placeholder
   const imageUrl =
     product.image && product.image.length > 0
       ? product.image[0]
@@ -83,9 +142,31 @@ const ProductDetails = () => {
                 </span>
               </div>
             </div>
-            <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded transition duration-300">
-              Add to Cart
-            </button>
+            {/* Conditional Button Rendering */}
+            <div>
+              {isOutOfStock ? (
+                <button
+                  disabled
+                  className="w-full cursor-not-allowed bg-gray-500 text-white font-bold py-3 rounded"
+                >
+                  Out of Stock
+                </button>
+              ) : isInCart ? (
+                <button
+                  disabled
+                  className="w-full cursor-not-allowed bg-green-500 text-white font-bold py-3 rounded"
+                >
+                  Already Added to Cart
+                </button>
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  className="w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded transition duration-300"
+                >
+                  Add to Cart
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

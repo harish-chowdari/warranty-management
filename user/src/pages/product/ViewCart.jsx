@@ -15,7 +15,6 @@ const ViewCart = () => {
       setCart(response?.data || {});
     } catch (err) {
       console.error("Error fetching cart:", err);
-      // setError("Failed to load cart");
     }
   };
 
@@ -51,7 +50,7 @@ const ViewCart = () => {
   const handleIncreaseQuantity = async (productId, currentQuantity, availableStock, totalPurchased) => {
     const remainingStock = availableStock - totalPurchased;
     if (currentQuantity + 1 > remainingStock) {
-      toast.error(`Only ${remainingStock} items available`);
+      toast.error(`Only ${remainingStock} item(s) available`);
       return;
     }
     try {
@@ -74,6 +73,7 @@ const ViewCart = () => {
   };
 
   // Updated Buy handler that checks if cart quantity exceeds remaining stock.
+  // Once purchase is successful, it removes the product from the API cart.
   const handleBuy = async (productId, quantity, remainingStock) => {
     if (quantity > remainingStock) {
       toast.error(`Your cart quantity exceeds the available stock. Only ${remainingStock} item(s) are available.`);
@@ -83,6 +83,9 @@ const ViewCart = () => {
       const res = await axios.post(`/create-purchase/${productId}/${userId}`, { quantity });
       if (res?.data?.purchaseSuccess) {
         toast.success("Order Placed Successfully");
+        // Remove the purchased product from the API cart.
+        await axios.delete(`/remove-from-cart/${productId}/${userId}`);
+        // Re-fetch the cart and aggregated purchases to update the UI.
         fetchCart();
         fetchAllPurchases();
       }
