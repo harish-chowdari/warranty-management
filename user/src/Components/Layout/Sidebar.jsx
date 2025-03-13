@@ -52,12 +52,12 @@ const Sidebar = () => {
                     </NavLink>
 
                     {/* claim warranty */}
-                    <NavLink to="/home/claim-warranty"
+                    {/* <NavLink to="/home/claim-warranty"
                     className={`flex ${!isOpen && "mx-auto"} items-center gap-2 p-2 hover:bg-gray-700 rounded-md transition duration-300`}
                     >
                         <FaBoxOpen size={18} />
                         {isOpen && <span>Claim Warranty</span>}
-                    </NavLink>
+                    </NavLink> */}
 
                     <NavLink to="/home/view-warranties"
                     className={`flex ${!isOpen && "mx-auto"} items-center gap-2 p-2 hover:bg-gray-700 rounded-md transition duration-300`}

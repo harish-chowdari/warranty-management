@@ -41,7 +41,6 @@ const claimWarranty = async (req, res) => {
       await warrantyRecord.save();
       const data = new ClaimedQrs({ qrCode });
       await data.save();
-      return res.status(200).json({ message: "Warranty claim successful", warranty: warrantyRecord });
     } 
     
     else {
@@ -52,8 +51,19 @@ const claimWarranty = async (req, res) => {
       const data = new ClaimedQrs({ qrCode });
       await data.save();
       await newWarrantyRecord.save();
-      return res.status(200).json({ message: "Warranty claim successful", warranty: newWarrantyRecord });
     }
+
+    const subject = "Warranty Claim Successful";
+    const text = `Dear ${user.name || 'User'},\n\nYour warranty claim for ${product.name} has been successfully processed.\nPurchase Date: ${purchaseDate} \n\nThank you,\nWarranty Team`;
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to: user.email,
+      subject,
+      text
+    });
+
+    return res.status(200).json({ message: "Warranty claim successful" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
