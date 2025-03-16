@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../axios';
+import { useNavigate } from 'react-router-dom';
 
 const ViewWarranties = () => {
   const [warrantyData, setWarrantyData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchWarranties = async () => {
@@ -19,6 +22,10 @@ const ViewWarranties = () => {
     };
     fetchWarranties();
   }, []);
+
+  const handleNavigate = (item) => {
+    navigate('/home/warranty-details', { state: { item } });
+  };
 
   if (loading) return <div className="text-center mt-8">Loading...</div>;
   if (warrantyData?.warranties?.length === 0)
@@ -40,7 +47,7 @@ const ViewWarranties = () => {
             const warrantyLeftDays = warrantyExpiryDate ? Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) : 0;
 
             return (
-              <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div key={index} onClick={() => handleNavigate(item)} className="bg-white cursor-pointer rounded-lg shadow-lg overflow-hidden">
                 <img 
                   src={item?.purchaseProof} 
                   alt="Purchase Proof" 

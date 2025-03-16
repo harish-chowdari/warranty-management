@@ -25,7 +25,6 @@ const GenerateQr = () => {
     setLoading(true);
     setMessage('');
     try {
-      // Prepare payload with the selected product id and the quantity.
       const payload = { productId: selectedProduct, quantity };
       const response = await axiosInstance.post("/generate-qr", payload);
       setMessage('QR Codes generated successfully!');
@@ -39,41 +38,43 @@ const GenerateQr = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="card p-4 shadow-sm">
-        <h2 className="mb-4 text-center">Generate QR Codes</h2>
-        {message && <div className="alert alert-info">{message}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="product" className="form-label">Select Product</label>
+    <div className="flex justify-center items-center bg-gray-100 p-4">
+      <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center mb-4">Generate QR Codes</h2>
+        {message && <div className="text-center text-sm text-blue-600 mb-4">{message}</div>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="product" className="block text-sm font-medium text-gray-700">Select Product</label>
             <select
               id="product"
-              className="form-select"
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
               value={selectedProduct}
               onChange={(e) => setSelectedProduct(e.target.value)}
               required
             >
               <option value="">-- Choose a product --</option>
               {products?.map((product) => (
-                <option key={product._id} value={product._id}>
-                  {product.name}
-                </option>
+                <option key={product?._id} value={product?._id}>{product?.name}</option>
               ))}
             </select>
           </div>
-          <div className="mb-3">
-            <label htmlFor="quantity" className="form-label">Quantity</label>
+          <div>
+            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity</label>
             <input
               type="number"
               id="quantity"
-              className="form-control"
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
               value={quantity}
               onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
               min="1"
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
+            disabled={loading}
+          >
             {loading ? 'Generating...' : 'Generate QR Codes'}
           </button>
         </form>

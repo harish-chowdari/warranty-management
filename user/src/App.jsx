@@ -13,6 +13,7 @@ import Scanner from "./pages/product/Scanner";
 import ViewWarranties from "./pages/product/ViewWarranties";
 import { Toaster } from "react-hot-toast";
 import ClaimWarranty from "./pages/product/ClaimWarranty";
+import WarrantyDetails from "./pages/product/WarrantyDetails";
 
 
 const App = () => {
@@ -37,6 +38,8 @@ const App = () => {
                     <Route path="scanner" element={<Scanner />}/>
                     <Route path="claim-warranty/:productId" element={<ClaimWarranty/>}/>
                     <Route path="view-warranties" element={<ViewWarranties/>}/>
+                    {/* warranty details */}
+                    <Route path="warranty-details" element={<WarrantyDetails/>}/>
                 </Route>
                 </Routes>
         </BrowserRouter>

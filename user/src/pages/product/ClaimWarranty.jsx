@@ -97,6 +97,7 @@ const ClaimWarranty = () => {
           <input
             type="file"
             id="purchaseProof"
+            accept="image/*"
             onChange={(e) => setPurchaseProof(e.target.files[0])}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
@@ -111,48 +112,6 @@ const ClaimWarranty = () => {
           </button>
         </div>
       </form>
-
-      {claimSuccessful && (
-        <div className="mt-6">
-          {/* Warranty Card */}
-          <div
-            ref={warrantyRef}
-            className="relative bg-gradient-to-br from-blue-100 to-blue-50 border border-blue-300 rounded-xl p-6 shadow-lg"
-            style={{ fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}
-          >
-            <h2 className="text-center text-3xl font-extrabold text-blue-800 mb-4">Warranty Card</h2>
-            {/* Product Image */}
-            {productDetails && productDetails.image && (
-              <div className="flex justify-center mb-4">
-                <img
-                  src={productDetails.image}
-                  alt={productDetails.name || "Product"}
-                  className="w-40 h-40 object-cover rounded-full border-4 border-blue-200"
-                />
-              </div>
-            )}
-            {/* Product and Purchase Details */}
-            <div className="text-blue-700">
-              {productDetails && productDetails.name && (
-                <p><span className="font-bold">Product Name:</span> {productDetails.name}</p>
-              )}
-              <p><span className="font-bold">Purchase Date:</span> {purchaseDate}</p>
-              <p>
-                <span className="font-bold">Warranty Expires:</span> {purchaseDate}
-              </p>
-            </div>
-          </div>
-          {/* Download Button */}
-          <div className="text-center mt-4">
-            <button
-              onClick={downloadWarrantyImage}
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Download Warranty Card 
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

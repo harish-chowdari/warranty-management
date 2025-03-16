@@ -10,6 +10,7 @@ import EditProduct from "./pages/product/EditProduct";
 import { Toaster } from "react-hot-toast";
 import GenerateQr from "./pages/product/GenerateQr";
 import DownloadQr from "./pages/product/DownloadQr";
+import ConvertQr from "./pages/product/ConvertQr";
 
 
 const App = () => {
@@ -27,6 +28,7 @@ const App = () => {
                 <Route path="edit-product/:productId" element={<EditProduct />} />
                 <Route path="generate-qr" element={<GenerateQr />} />
                 <Route path="download-qr" element={<DownloadQr />} />
+                <Route path="convert-qr" element={<ConvertQr />} />
             </Route>
           </Routes>
         </BrowserRouter>

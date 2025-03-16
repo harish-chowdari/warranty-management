@@ -119,7 +119,7 @@ const DownloadQr = () => {
                         className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
                         onClick={() => handleDownloadBatch(batch)}
                       >
-                        Download Excel
+                        Download
                       </button>
                     </td>
                   </tr>

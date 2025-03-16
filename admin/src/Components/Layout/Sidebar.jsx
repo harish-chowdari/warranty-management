@@ -64,6 +64,14 @@ const Sidebar = () => {
             <FaPencilAlt size={18} />
             {isOpen && <span>Download Qr</span>}
           </NavLink>
+          {/* convert qr */}
+          <NavLink
+            to="/home/convert-qr"
+            className={`flex ${!isOpen && "mx-auto"} items-center gap-2 p-2 hover:bg-gray-700 rounded-md transition duration-300`}
+          >
+            <FaPencilAlt size={18} />
+            {isOpen && <span>Convert Qr</span>}
+          </NavLink>
         </nav>
       </div>
     </div>
