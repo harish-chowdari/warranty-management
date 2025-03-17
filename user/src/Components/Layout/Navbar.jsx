@@ -13,22 +13,32 @@ const Navbar = () => {
     navigate("/");
   };
 
+  const fetchCartCount = async () => {
+    try {
+      const response = await axios.get(`/cart/${userId}`);
+      const totalItems = response.data?.products?.reduce(
+        (acc, item) =>
+          acc + (typeof item.quantity === 'number' ? item.quantity : 1),
+        0
+      ) || 0;
+      setCartCount(totalItems);
+    } catch (err) {
+      console.error("Error fetching cart count:", err);
+    }
+  };
+  
   useEffect(() => {
-    const fetchCartCount = async () => {
-      try {
-        const response = await axios.get(`/cart/${userId}`);
-        const totalItems = response.data?.products?.reduce(
-          (acc, item) =>
-            acc + (typeof item.quantity === 'number' ? item.quantity : 1),
-          0
-        ) || 0;
-        setCartCount(totalItems);
-      } catch (err) {
-        console.error("Error fetching cart count:", err);
-      }
-    };
+    
 
     if (userId) fetchCartCount();
+  }, [userId]);
+
+  useEffect(() => {
+    // call evry seconf 
+    const interval = setInterval(() => {
+      if (userId) fetchCartCount();
+    }, 1000);
+    return () => clearInterval(interval);
   }, [userId]);
 
   return (

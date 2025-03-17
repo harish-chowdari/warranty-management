@@ -35,6 +35,14 @@ const ViewCart = () => {
     }
   }, [userId]);
 
+  // for every second call fetch cart
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     fetchCart();
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, []);
+
   // Calculate aggregated quantities from all purchases.
   // This maps productId (as a string) to the total purchased count.
   const aggregatedQuantities = {};
@@ -56,7 +64,7 @@ const ViewCart = () => {
     try {
       await axios.post(`/add-to-cart/${productId}/${userId}`, { quantity: 1 });
       fetchCart();
-      window.location.reload();
+      // window.location.reload();
     } catch (err) {
       console.error("Error increasing quantity:", err);
       setError("Failed to update cart");
@@ -67,7 +75,7 @@ const ViewCart = () => {
     try {
       await axios.delete(`/remove-from-cart/${productId}/${userId}`);
       fetchCart();
-      window.location.reload();
+      // window.location.reload();
     } catch (err) {
       console.error("Error decreasing quantity:", err);
       setError("Failed to update cart");
@@ -90,7 +98,7 @@ const ViewCart = () => {
         // Re-fetch the cart and aggregated purchases to update the UI.
         fetchCart();
         fetchAllPurchases();
-        window.location.reload();
+        // window.location.reload();
       }
     } catch (err) {
       console.error("Error checking out:", err);

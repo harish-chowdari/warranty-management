@@ -154,7 +154,7 @@ const ViewProducts = () => {
       await axios.post(`/add-to-cart/${productId}/${userId}`, { quantity: 1 });
       // Optionally re-fetch cart to ensure sync:
       // await fetchCart();
-      window.location.reload();
+      // window.location.reload();
     } catch (err) {
       console.error("Error adding product to cart:", err);
       setError("Failed to update cart");
