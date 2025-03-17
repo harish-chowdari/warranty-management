@@ -9,7 +9,11 @@ const ViewPurchases = () => {
       try {
         const userId = localStorage.getItem('userId');
         const res = await axios.get(`/all-purchases/${userId}`);
-        setPurchases(res?.data || []);
+        const reversedPurchases = res?.data?.map(purchase => ({
+          ...purchase,
+          products: [...purchase.products].reverse()
+        })).reverse();
+        setPurchases(reversedPurchases || []);
       } catch (error) {
         console.error(error);
       }

@@ -14,7 +14,10 @@ const ViewWarranties = () => {
       try {
         const userId = localStorage.getItem("userId");
         const res = await axios.get(`/all-warranties/${userId}`);
-        setWarrantyData(res?.data?.warranty);
+        setWarrantyData({
+          ...res?.data?.warranty,
+          warranties: res?.data?.warranty?.warranties?.reverse() || []
+        });
       } catch (err) {
         setError("Failed to fetch warranties");
       }

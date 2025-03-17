@@ -171,13 +171,13 @@ const sendWarrantyLeftMail = async () => {
   }
 };
 
-// cron.schedule("*/4 * * * * *", async () => {
-//   try {
-//     await sendWarrantyLeftMail();
-//   } catch (error) {
-//     console.error("Error in sending warranty reminder emails:", error);
-//   }
-// });
+cron.schedule("1 * * * * *", async () => {
+  try {
+    await sendWarrantyLeftMail();
+  } catch (error) {
+    console.error("Error in sending warranty reminder emails:", error);
+  }
+});
 
 module.exports = { 
   claimWarranty,
