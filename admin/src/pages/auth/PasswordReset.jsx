@@ -8,6 +8,8 @@ const PasswordReset = () => {
   const [isOTPSent, setIsOTPSent] = useState(false);
   const navigate = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleChange = (e) => {
     setLogin({ ...login, [e.target.name]: e.target.value });
   };
@@ -18,6 +20,7 @@ const PasswordReset = () => {
 
     if (!isOTPSent) {
       try {
+        setIsLoading(true);
         const res = await axios.post("/send-admin-otp", { email: login.email });
 
         if (res.data.emailRequire) {
@@ -29,11 +32,15 @@ const PasswordReset = () => {
           setIsOTPSent(true);
         }
       } catch (error) {
+        setIsLoading(false);
         console.log(error);
         setErrorMessage("An error occurred. Please try again.");
+      } finally {
+        setIsLoading(false);
       }
     } else {
       try {
+        setIsLoading(true);
         const res = await axios.post("/update-admin-password", {
           email: login.email,
           otp: login.otp,
@@ -49,8 +56,11 @@ const PasswordReset = () => {
           navigate("/");
         }
       } catch (error) {
+        setIsLoading(false);
         console.log(error);
         setErrorMessage("An error occurred while updating the password.");
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -100,9 +110,10 @@ const PasswordReset = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-all"
+          disabled={isLoading}
+          className={`w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-all ${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
         >
-          {isOTPSent ? "Reset Password" : "Send OTP"}
+          {isOTPSent ? "Reset Password" : isLoading ? "Sending OTP..." : "Send OTP"}
         </button>
 
         <p className="text-sm text-gray-600 text-center mt-3">
