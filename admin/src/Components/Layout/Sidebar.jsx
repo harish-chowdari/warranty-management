@@ -5,7 +5,9 @@ import {
   FaChevronLeft, 
   FaChevronRight, 
   FaList, 
-  FaPencilAlt 
+  FaQrcode, 
+  FaDownload, 
+  FaExchangeAlt 
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -53,24 +55,24 @@ const Sidebar = () => {
             to="/home/generate-qr"
             className={`flex ${!isOpen && "mx-auto"} items-center gap-2 p-2 hover:bg-gray-700 rounded-md transition duration-300`}
           >
-            <FaPencilAlt size={18} />
-            {isOpen && <span>Generate Qr</span>}
+            <FaQrcode size={18} />
+            {isOpen && <span>Generate QR</span>}
           </NavLink>
-          {/* download qr */}
+
           <NavLink
             to="/home/download-qr"
             className={`flex ${!isOpen && "mx-auto"} items-center gap-2 p-2 hover:bg-gray-700 rounded-md transition duration-300`}
           >
-            <FaPencilAlt size={18} />
-            {isOpen && <span>Download Qr</span>}
+            <FaDownload size={18} />
+            {isOpen && <span>Download QR</span>}
           </NavLink>
-          {/* convert qr */}
+
           <NavLink
             to="/home/convert-qr"
             className={`flex ${!isOpen && "mx-auto"} items-center gap-2 p-2 hover:bg-gray-700 rounded-md transition duration-300`}
           >
-            <FaPencilAlt size={18} />
-            {isOpen && <span>Convert Qr</span>}
+            <FaExchangeAlt size={18} />
+            {isOpen && <span>Convert QR</span>}
           </NavLink>
         </nav>
       </div>
