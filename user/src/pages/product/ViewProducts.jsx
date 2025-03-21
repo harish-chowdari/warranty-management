@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import axios from "../../axios";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -15,10 +15,14 @@ const ViewProducts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [sortOption, setSortOption] = useState("default");
+  // currentPage now represents the number of "pages" (each page is 10 products) loaded so far.
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 5;
+  const productsPerPage = 10;
 
   const userId = localStorage.getItem("userId");
+
+  // Ref for the sentinel element at the bottom.
+  const sentinelRef = useRef(null);
 
   // Fetch products, cart and aggregated purchase data
   useEffect(() => {
@@ -58,7 +62,6 @@ const ViewProducts = () => {
   }, [userId]);
 
   // Calculate aggregated purchased quantities for each product.
-  // This object maps product IDs to the total purchased count.
   const aggregatedQuantities = {};
   allPurchased.forEach((purchase) => {
     purchase.products.forEach((item) => {
@@ -108,10 +111,11 @@ const ViewProducts = () => {
     }
   }, [filteredProducts, sortOption]);
 
-  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
+  // Instead of slicing based on current page only,
+  // we show all products up to the currentPage * productsPerPage.
   const currentProducts = useMemo(() => {
-    const startIndex = (currentPage - 1) * productsPerPage;
-    return sortedProducts.slice(startIndex, startIndex + productsPerPage);
+    const endIndex = currentPage * productsPerPage;
+    return sortedProducts.slice(0, endIndex);
   }, [sortedProducts, currentPage]);
 
   const sliderSettings = {
@@ -125,10 +129,29 @@ const ViewProducts = () => {
     autoplaySpeed: 2000,
   };
 
-  const handlePageChange = (page) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-  };
+  // IntersectionObserver to trigger loading more products
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      if (entry.isIntersecting) {
+        // Load next "page" if there are more products available.
+        if (currentProducts.length < sortedProducts.length) {
+          setCurrentPage((prev) => prev + 1);
+        }
+      }
+    }, {
+      rootMargin: "100px", // Start loading a bit before the sentinel is fully visible
+    });
+
+    if (sentinelRef.current) {
+      observer.observe(sentinelRef.current);
+    }
+    return () => {
+      if (sentinelRef.current) {
+        observer.unobserve(sentinelRef.current);
+      }
+    };
+  }, [sentinelRef, sortedProducts, currentProducts.length]);
 
   // Optimistic update: update local cart state immediately on "Add to Cart"
   const handleAddToCart = async (productId) => {
@@ -152,9 +175,6 @@ const ViewProducts = () => {
 
       // Make API call to add the product to the cart.
       await axios.post(`/add-to-cart/${productId}/${userId}`, { quantity: 1 });
-      // Optionally re-fetch cart to ensure sync:
-      // await fetchCart();
-      // window.location.reload();
     } catch (err) {
       console.error("Error adding product to cart:", err);
       setError("Failed to update cart");
@@ -183,7 +203,7 @@ const ViewProducts = () => {
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
-            setCurrentPage(1);
+            setCurrentPage(1); // reset page count on filter change
           }}
         />
         <select
@@ -226,7 +246,6 @@ const ViewProducts = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {currentProducts.map((product) => {
-          // Calculate remaining stock for each product.
           const totalPurchased = aggregatedQuantities[product._id] || 0;
           const remainingStock = product.quantity - totalPurchased;
           const isOutOfStock = remainingStock <= 0;
@@ -295,46 +314,13 @@ const ViewProducts = () => {
         )}
       </div>
 
-      <div className="mt-6 flex justify-center items-center space-x-2">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={`px-3 py-1 rounded border ${
-            currentPage === 1
-              ? "text-gray-400 border-gray-300"
-              : "text-blue-600 border-blue-600 hover:bg-blue-100"
-          }`}
-        >
-          Previous
-        </button>
-        {[...Array(totalPages)].map((_, idx) => {
-          const page = idx + 1;
-          return (
-            <button
-              key={page}
-              onClick={() => handlePageChange(page)}
-              className={`px-3 py-1 rounded border ${
-                currentPage === page
-                  ? "bg-blue-600 text-white border-blue-600"
-                  : "text-blue-600 border-blue-600 hover:bg-blue-100"
-              }`}
-            >
-              {page}
-            </button>
-          );
-        })}
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={`px-3 py-1 rounded border ${
-            currentPage === totalPages
-              ? "text-gray-400 border-gray-300"
-              : "text-blue-600 border-blue-600 hover:bg-blue-100"
-          }`}
-        >
-          Next
-        </button>
-      </div>
+      {/* Sentinel element for infinite scrolling */}
+      <div ref={sentinelRef} className="h-10"></div>
+
+      {/* Optional: Loading indicator */}
+      {currentProducts.length < sortedProducts.length && (
+        <p className="text-center text-gray-600 mt-4">Loading more products...</p>
+      )}
     </div>
   );
 };

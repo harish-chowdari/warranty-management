@@ -111,7 +111,7 @@ const ProductDetails = () => {
               <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
               <div className="mb-4">
                 <span className="text-xl text-gray-600">Brand: </span>
-                <span className="text-xl font-medium text-gray-800">{product.brand}</span>
+                <span className="text-xl font-medium text-gray-800">{product?.brand}</span>
               </div>
               <div className="mb-4">
                 <span className="text-xl text-gray-600">Category: </span>

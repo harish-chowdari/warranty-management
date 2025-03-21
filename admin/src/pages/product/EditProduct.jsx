@@ -31,6 +31,7 @@ const EditProduct = () => {
     initialValues: {
       name: product?.name || "",
       modelNo: product?.modelNo || "",
+      brand: product?.brand || "",
       mfgDate: product?.mfgDate ? new Date(product?.mfgDate).toISOString().split("T")[0] : "",
       warrantyTermsAndConditions: product?.warrantyTermsAndConditions || "",
       warrantyInDays: product?.warrantyInDays || "",
@@ -43,6 +44,7 @@ const EditProduct = () => {
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
       modelNo: Yup.string().required("Model No is required"),
+      brand: Yup.string().required("Brand is required"),
       mfgDate: Yup.date().required("Manufacturing Date is required"),
       warrantyTermsAndConditions: Yup.string().required("Warranty Terms & Conditions are required"),
       warrantyInDays: Yup.number()
@@ -111,15 +113,16 @@ const EditProduct = () => {
           </div>
           <div>
             <Input
-              name="modelNo"
+              name="brand"
               formik={formik}
-              label="Model No"
-              placeholder="Model No"
-              value={formik.values.modelNo}
+              label="Brand"
+              placeholder="Brand"
+              value={formik.values.brand}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
           </div>
+          
         </div>
         <div className="grid grid-cols-2 gap-x-4">
           <div>
@@ -134,6 +137,7 @@ const EditProduct = () => {
               onBlur={formik.handleBlur}
             />
           </div>
+          
           <div>
             <Input
               name="warrantyInDays"
@@ -197,6 +201,7 @@ const EditProduct = () => {
             />
           </div>
         </div>
+        <div className="grid grid-cols-2 gap-x-4">
         <div>
           <label className="block text-sm mb-[1px]">Image</label>
           <input
@@ -214,6 +219,18 @@ const EditProduct = () => {
               formik.errors.image && formik.touched.image ? "border-red-500" : "border-gray-300"
             } rounded-sm w-full`}
           />
+        </div>
+        <div>
+            <Input
+              name="modelNo"
+              formik={formik}
+              label="Model No"
+              placeholder="Model No"
+              value={formik.values.modelNo}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+          </div>
         </div>
         <div>
           <TextArea

@@ -52,13 +52,13 @@ const PasswordReset = () => {
           setErrorMessage("OTP has expired. Please request a new one.");
         } else if (res.data.updatedPassword) {
           alert("Password updated successfully! You can now log in.");
-          navigate("/");
+          navigate("/login");
         }
       } catch (error) {
         console.log(error);
         setErrorMessage("An error occurred while updating the password.");
       } finally {
-        setIsLoading(false);
+        setIsLoading(false);  
       }
     }
   };
@@ -124,7 +124,7 @@ const PasswordReset = () => {
 
         <p className="text-sm text-gray-600 text-center mt-3">
           Remember your password?{" "}
-          <Link to="/" className="text-blue-500 hover:underline">
+          <Link to="/login" className="text-blue-500 hover:underline">
             Login
           </Link>
         </p>

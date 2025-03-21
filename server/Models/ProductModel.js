@@ -9,6 +9,9 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    brand: {
+        type: String,
+    },
     mfgDate: {
         type: Date,
         required: true

@@ -13,6 +13,7 @@ async function createProduct(req, res) {
         const { 
             name, 
             modelNo, 
+            brand,
             warrantyTermsAndConditions, 
             price, 
             category, 
@@ -25,6 +26,7 @@ async function createProduct(req, res) {
         const data = new Product({ 
             name, 
             modelNo, 
+            brand,
             mfgDate,
             warrantyTermsAndConditions, 
             warrantyInDays, 
@@ -53,6 +55,7 @@ const editProduct = async (req, res) => {
     const { 
       name, 
       modelNo, 
+      brand,
       warrantyTermsAndConditions, 
       price, 
       category, 
@@ -65,6 +68,7 @@ const editProduct = async (req, res) => {
     let updatedData = {
       name,
       modelNo,
+      brand,
       mfgDate,
       warrantyTermsAndConditions,
       warrantyInDays,

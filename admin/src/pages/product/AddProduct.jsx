@@ -32,6 +32,7 @@ const AddProduct = () => {
     initialValues: {
       name: "",
       modelNo: "",
+      brand: "",
       mfgDate: "",
       warrantyTermsAndConditions: "",
       warrantyInDays: "",
@@ -44,6 +45,7 @@ const AddProduct = () => {
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
       modelNo: Yup.string().required("Model No is required"),
+      brand: Yup.string().required("Brand is required"),
       mfgDate: Yup.date().required("Manufacturing Date is required"),
       warrantyTermsAndConditions: Yup.string().required("Warranty Terms & Conditions are required"),
       warrantyInDays: Yup.number()
@@ -100,13 +102,14 @@ const AddProduct = () => {
               onBlur={formik.handleBlur}
             />
           </div>
+          
           <div>
             <Input
-              name="modelNo"
+              name="brand"
               formik={formik}
-              label="Model No"
-              placeholder="Model No"
-              value={formik.values.modelNo}
+              label="Brand"
+              placeholder="Brand"
+              value={formik.values.brand}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
@@ -181,33 +184,44 @@ const AddProduct = () => {
               onBlur={formik.handleBlur}
             />
           </div>
-          <div className="col-span-2">
-            <label className="block text-sm mb-[1px]">Image</label>
-            <input
-              id="image"
-              name="image"
-              type="file"
-              accept="image/*"
-              onChange={(event) => {
-                if (
-                  event.currentTarget.files &&
-                  event.currentTarget.files[0]
-                ) {
-                  console.log("File selected:", event.currentTarget.files[0]);
-                  formik.setFieldValue("image", event.currentTarget.files[0]);
-                }
-              }}
-              className={`border text-xs p-[5px] text-gray-500 cursor-pointer hover:text-blue-500 hover:border-blue-500 ${
-                formik.errors.image && formik.touched.image
-                  ? "border-red-500"
-                  : "border-gray-300"
-              } rounded-sm w-full`}
-            />
-            {formik.errors.image && formik.touched.image && (
-              <div className="text-red-500 text-xs">{formik.errors.image}</div>
-            )}
+            <div className="">
+              <label className="block text-sm mb-[1px]">Image</label>
+              <input
+                id="image"
+                name="image"
+                type="file"
+                accept="image/*"
+                onChange={(event) => {
+                  if (
+                    event.currentTarget.files &&
+                    event.currentTarget.files[0]
+                  ) {
+                    console.log("File selected:", event.currentTarget.files[0]);
+                    formik.setFieldValue("image", event.currentTarget.files[0]);
+                  }
+                }}
+                className={`border text-xs p-[5px] text-gray-500 cursor-pointer hover:text-blue-500 hover:border-blue-500 ${
+                  formik.errors.image && formik.touched.image
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } rounded-sm w-full`}
+              />
+              {formik.errors.image && formik.touched.image && (
+                <div className="text-red-500 text-xs">{formik.errors.image}</div>
+              )}
+            </div>
+            <div>
+              <Input
+                name="modelNo"
+                formik={formik}
+                label="Model No"
+                placeholder="Model No"
+                value={formik.values.modelNo}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+            </div>
           </div>
-        </div>
         <div>
           <TextArea
             name="warrantyTermsAndConditions"

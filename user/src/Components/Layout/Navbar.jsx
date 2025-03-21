@@ -52,7 +52,7 @@ const Navbar = () => {
         </div>
         
         <div className="flex items-center gap-4">
-          <NavLink
+          { userId && <NavLink
             to="/home/view-cart"
             className="relative flex items-center px-4 py-2 rounded-md hover:text-blue-600 transition duration-300"
           >
@@ -62,15 +62,25 @@ const Navbar = () => {
                 {cartCount > 0 ? cartCount : '0'}
               </span>
             )}
-          </NavLink>
+          </NavLink>}
           
-          <button
-            onClick={handleLogout}
-            className="flex items-center cursor-pointer px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition duration-300"
-          >
-            <FaSignOutAlt className="mr-2" />
-            Logout
-          </button>
+          {
+            userId ? (
+              <button
+                onClick={handleLogout}
+                className="flex items-center px-4 py-2 rounded-md hover:text-blue-600 transition duration-300"
+              >
+                <FaSignOutAlt size={20} />
+              </button>
+            ) : (
+              <NavLink
+                to="/login"
+                className="flex items-center px-4 py-2 rounded-md hover:text-blue-600 transition duration-300"
+              >
+                Login
+              </NavLink>
+            )
+          }
         </div>
       </div>
     </nav>

@@ -14,11 +14,11 @@ import ViewWarranties from "./pages/product/ViewWarranties";
 import { Toaster } from "react-hot-toast";
 import ClaimWarranty from "./pages/product/ClaimWarranty";
 import WarrantyDetails from "./pages/product/WarrantyDetails";
+import AllProducts from "./pages/product/AllProducts";
+import Details from "./pages/product/Details";
 
 
 const App = () => {
-
-  const isUserLoggedIn = localStorage.getItem("userId");
 
   return (
     <div>
@@ -26,9 +26,11 @@ const App = () => {
 
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/signup" element= {<Signup />} />
                 <Route path="/reset" element= {<PasswordReset/>} />
+                <Route path="/" element={<AllProducts />}/>
+                <Route path="/details/:productId" element={<Details />}/>
 
                 <Route path="/home" element={<Layout />}>
                     <Route path="view-products" element={<ViewProducts />}/>
@@ -40,6 +42,7 @@ const App = () => {
                     <Route path="view-warranties" element={<ViewWarranties/>}/>
                     {/* warranty details */}
                     <Route path="warranty-details" element={<WarrantyDetails/>}/>
+                    {/* all prdocts */}
                 </Route>
                 </Routes>
         </BrowserRouter>

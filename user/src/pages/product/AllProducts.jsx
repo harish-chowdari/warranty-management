@@ -3,22 +3,24 @@ import axios from "../../axios";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../../Components/Layout/Navbar";
 
-const ViewProducts = () => {
+const AllProducts = () => {
+  const navigate = useNavigate();
   const [allProducts, setAllProducts] = useState([]);
   const [allPurchased, setAllPurchased] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [sortOption, setSortOption] = useState("default");
-  // currentPage now represents how many "pages" of 16 products have been loaded.
+  // currentPage represents the number of "pages" (each page is 10 products) loaded so far.
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 10;
 
-  // Sentinel ref for infinite scrolling
+  // Ref for the sentinel element at the bottom.
   const sentinelRef = useRef(null);
 
-  // Fetch all products
+  // Fetch all products and aggregated purchase data
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
@@ -28,29 +30,37 @@ const ViewProducts = () => {
         console.error(error);
       }
     };
-    fetchAllProducts();
-  }, []);
 
-  // Fetch all purchases for aggregation
-  useEffect(() => {
     const fetchAllPurchases = async () => {
       try {
         const response = await axios.get("/get-every-purchases");
         setAllPurchased(response.data);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching purchases:", error);
       }
     };
+
+    fetchAllProducts();
     fetchAllPurchases();
   }, []);
 
-  // Get unique categories for filtering
+  // Calculate aggregated purchased quantities for each product.
+  const aggregatedQuantities = {};
+  allPurchased.forEach((purchase) => {
+    purchase.products.forEach((item) => {
+      const { productId, quantity } = item;
+      aggregatedQuantities[productId] =
+        (aggregatedQuantities[productId] || 0) + quantity;
+    });
+  });
+
+  // Compute categories from products for filtering.
   const categories = useMemo(() => {
     const cats = allProducts.map((product) => product.category);
     return ["All Categories", ...new Set(cats)];
   }, [allProducts]);
 
-  // Filter products by category and search query
+  // Filter products based on search query and selected category.
   const filteredProducts = useMemo(() => {
     return allProducts.filter((product) => {
       const matchesCategory =
@@ -63,7 +73,7 @@ const ViewProducts = () => {
     });
   }, [allProducts, selectedCategory, searchQuery]);
 
-  // Sort the filtered products
+  // Sort products based on selected sort option.
   const sortedProducts = useMemo(() => {
     const products = [...filteredProducts];
     switch (sortOption) {
@@ -84,13 +94,13 @@ const ViewProducts = () => {
     }
   }, [filteredProducts, sortOption]);
 
-  // Instead of slicing by page, we show all products up to currentPage * productsPerPage.
+  // Display products up to the current page (each page loads 10 products).
   const currentProducts = useMemo(() => {
     const endIndex = currentPage * productsPerPage;
     return sortedProducts.slice(0, endIndex);
   }, [sortedProducts, currentPage]);
 
-  // Slider settings for products with multiple images
+  // Slider settings for products with multiple images.
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -102,31 +112,18 @@ const ViewProducts = () => {
     autoplaySpeed: 2000,
   };
 
-  // Aggregate purchased quantities for each product.
-  // This creates an object mapping productId (string) to the total quantity purchased.
-  const aggregatedQuantities = {};
-  allPurchased?.forEach((purchase) => {
-    purchase.products.forEach((product) => {
-      const { productId, quantity } = product;
-      aggregatedQuantities[productId] =
-        (aggregatedQuantities[productId] || 0) + quantity;
-    });
-  });
-  console.log(aggregatedQuantities, "aggregated quantities");
-
-  // Set up IntersectionObserver for infinite scrolling
+  // IntersectionObserver to trigger loading more products
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (entry.isIntersecting) {
-          // Only load more if there are still products left to show.
-          if (currentProducts.length < sortedProducts.length) {
-            setCurrentPage((prevPage) => prevPage + 1);
-          }
+        if (entry.isIntersecting && currentProducts.length < sortedProducts.length) {
+          setCurrentPage((prev) => prev + 1);
         }
       },
-      { rootMargin: "100px" }
+      {
+        rootMargin: "100px",
+      }
     );
     if (sentinelRef.current) {
       observer.observe(sentinelRef.current);
@@ -136,15 +133,16 @@ const ViewProducts = () => {
         observer.unobserve(sentinelRef.current);
       }
     };
-  }, [currentProducts.length, sortedProducts.length]);
+  }, [sentinelRef, sortedProducts, currentProducts.length]);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+    <div className="min-h-screen bg-gray-100">
+    <Navbar />
+      {/* <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
         All Products
-      </h1>
+      </h1> */}
 
-      <div className="max-w-4xl mx-auto mb-6 grid grid-cols-4 gap-4">
+      <div className="max-w-4xl mt-6 mx-auto mb-6 grid grid-cols-4 gap-4">
         <input
           type="text"
           placeholder="Search by name..."
@@ -152,7 +150,7 @@ const ViewProducts = () => {
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
-            setCurrentPage(1);
+            setCurrentPage(1); // reset page count on filter change
           }}
         />
         <select
@@ -193,25 +191,23 @@ const ViewProducts = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {currentProducts?.map((product) => {
-          // Calculate available count using aggregated purchase data.
-          const totalProductCount = product.quantity;
-          const purchasedCount = aggregatedQuantities[product._id] || 0;
-          const availableCount = totalProductCount - purchasedCount;
-          
+      <div className="grid p-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {currentProducts.map((product) => {
+          const totalPurchased = aggregatedQuantities[product._id] || 0;
+          const remainingStock = product.quantity - totalPurchased;
+
           return (
             <div
-              key={product?._id}
+              key={product._id}
               className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
             >
-              {product?.image?.length > 1 ? (
+              {product.image && product.image.length > 1 ? (
                 <Slider {...sliderSettings}>
-                  {product?.image.map((image, index) => (
+                  {product.image.map((img, index) => (
                     <div key={index}>
                       <img
-                        src={image}
-                        alt={product?.name}
+                        src={img}
+                        alt={product.name}
                         className="w-full h-48 object-cover rounded-md"
                       />
                     </div>
@@ -219,27 +215,23 @@ const ViewProducts = () => {
                 </Slider>
               ) : (
                 <img
-                  src={product?.image[0]}
-                  alt={product?.name}
-                  className="w-full h-48 object-cover rounded-md"
+                  onClick={() => navigate(`/details/${product._id}`)}
+                  src={product.image ? product.image[0] : ""}
+                  alt={product.name}
+                  className="w-full h-48 object-cover cursor-pointer rounded-md"
                 />
               )}
               <h2 className="text-xl font-semibold text-gray-900 mt-4">
-                {product?.name}
+                {product.name}
               </h2>
-              <p className="text-gray-600 mt-2">{product?.description}</p>
-              <p className="text-sm text-gray-700 mt-2">
-                Total: {totalProductCount} | Available: {availableCount}
-              </p>
+              <p className="text-gray-600 mt-2">{product.termsAndConditions}</p>
               <p className="text-lg font-bold text-green-600 mt-2">
-                ${product?.price}
+                ${product.price}
               </p>
-              <Link
-                to={`/home/edit-product/${product?._id}`}
-                className="mt-4 block bg-blue-600 text-white py-2 text-center rounded-md hover:bg-blue-700 transition"
-              >
-                Edit
-              </Link>
+              {/* <p className="text-sm text-gray-700 mt-1">
+                Remaining: {remainingStock}
+              </p> */}
+              {/* No buttons are displayed */}
             </div>
           );
         })}
@@ -248,10 +240,10 @@ const ViewProducts = () => {
         )}
       </div>
 
-      {/* Sentinel element for triggering infinite scroll */}
+      {/* Sentinel element for infinite scrolling */}
       <div ref={sentinelRef} className="h-10"></div>
-      
-      {/* Optional loading indicator */}
+
+      {/* Optional: Loading indicator */}
       {currentProducts.length < sortedProducts.length && (
         <p className="text-center text-gray-600 mt-4">Loading more products...</p>
       )}
@@ -259,4 +251,4 @@ const ViewProducts = () => {
   );
 };
 
-export default ViewProducts;
+export default AllProducts;
