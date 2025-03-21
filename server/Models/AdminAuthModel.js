@@ -13,6 +13,12 @@ const AdminSchema = new mongoose.Schema({
     password: {
         type: String
     },
+    verify2FAOtP: {
+        type: String
+    },
+    verify2FAOtPExpiresAt: {
+        type: Date
+    },
     otp: {
         type: String 
     },
