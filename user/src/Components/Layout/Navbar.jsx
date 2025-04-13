@@ -36,7 +36,7 @@ const Navbar = () => {
   useEffect(() => {
     // call evry seconf 
     const interval = setInterval(() => {
-      if (userId) fetchCartCount();
+    //   if (userId) fetchCartCount();
     }, 1000);
     return () => clearInterval(interval);
   }, [userId]);

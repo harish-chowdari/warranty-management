@@ -14,6 +14,20 @@ const PurchaseSchema = new mongoose.Schema({
             quantity: {
                 type: Number,
                 default: 1
+            },
+            address: {
+                type: String,
+            },
+            paymentDetails: {
+                cardNumber: {
+                    type: String
+                },
+                cvv: {
+                    type: String
+                },
+                expiryDate: {
+                    type: String
+                }
             }
         }
     ]
