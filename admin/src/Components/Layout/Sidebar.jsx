@@ -67,13 +67,13 @@ const Sidebar = () => {
             {isOpen && <span>Download QR</span>}
           </NavLink>
 
-          <NavLink
+          {/* <NavLink
             to="/home/convert-qr"
             className={`flex ${!isOpen && "mx-auto"} items-center gap-2 p-2 hover:bg-gray-700 rounded-md transition duration-300`}
           >
             <FaExchangeAlt size={18} />
             {isOpen && <span>Convert QR</span>}
-          </NavLink>
+          </NavLink> */}
         </nav>
       </div>
     </div>
