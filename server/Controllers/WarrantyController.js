@@ -27,13 +27,13 @@ const claimWarranty = async (req, res) => {
 
     const userWarrantyClaim = await Warranty.findOne({ userId, "warranties.qrCode": qrCode });
     if (userWarrantyClaim) {
-      return res.status(200).json({ message: "You have already claimed warranty for this QR code" });
+      return res.status(200).json({ message: "You have already Registered warranty for this QR code" });
     }
 
     const alreadyClaimed = await ClaimedQrs.findOne({ qrCode });
 
     if(alreadyClaimed) {
-      return res.status(200).json({ message: "Warranty already claimed for this QR code by someone" });
+      return res.status(200).json({ message: "Warranty already Registered for this QR code by someone" });
     }
 
     if (warrantyRecord) {
@@ -53,8 +53,8 @@ const claimWarranty = async (req, res) => {
       await newWarrantyRecord.save();
     }
 
-    const subject = "Warranty Claim Successful";
-    const text = `Dear ${user.name || 'User'},\n\nYour warranty claim for ${product.name} has been successfully processed.\nPurchase Date: ${purchaseDate} \n\nThank you,\nWarranty Team`;
+    const subject = "Warranty Registered Successfully";
+    const text = `Dear ${user.name || 'User'},\n\nYour warranty Registration for ${product.name} has been successfully processed.\nPurchase Date: ${purchaseDate} \n\nThank you,\nWarranty Team`;
 
     await transporter.sendMail({
       from: process.env.EMAIL_FROM,
@@ -63,7 +63,7 @@ const claimWarranty = async (req, res) => {
       text
     });
 
-    return res.status(200).json({ message: "Warranty claim successful" });
+    return res.status(200).json({ message: "Warranty registered successfully" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });

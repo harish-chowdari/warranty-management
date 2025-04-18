@@ -56,7 +56,7 @@ const QrCodeScanner = () => {
       try {
         const { data: purchases } = await axiosInstance.get(`/all-purchases/${userId}`);
         if (!purchases || purchases.length === 0) {
-          setResponseText("You have not bought any products. Please purchase a product to claim warranty.");
+          setResponseText("You have not bought any products. Please purchase a product to Register the warranty.");
           return;
         }
         const purchasedProducts = purchases[0].products;
@@ -73,7 +73,7 @@ const QrCodeScanner = () => {
           setResponseText("");
           navigate(`/home/claim-warranty/${scanResult}`);
         } else {
-          setResponseText("You have not bought the product. Please purchase it to claim the warranty.");
+          setResponseText("You have not bought the product. Please purchase it to Register the warranty.");
         }
       } catch (error) {
         console.error("Error fetching all purchases:", error);
