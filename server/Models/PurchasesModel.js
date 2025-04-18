@@ -15,8 +15,22 @@ const PurchaseSchema = new mongoose.Schema({
                 type: Number,
                 default: 1
             },
-            address: {
-                type: String,
+            fullAddress: {
+                state: {
+                    type: String
+                },
+                city: {
+                    type: String    
+                },
+                area: {
+                    type: String
+                },
+                street: {
+                    type: String
+                },
+                pincode: {
+                    type: String
+                }
             },
             paymentDetails: {
                 cardNumber: {

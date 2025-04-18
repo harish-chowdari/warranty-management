@@ -7,15 +7,15 @@ const nodemailer        = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'gmail',         // e.g. 'Gmail'
   auth: {
-    user: process.env.EMAIL_USER,             // your email address
-    pass: process.env.EMAIL_PASSWORD              // your email password / app password
+    user: process.env.EMAIL_USER,             
+    pass: process.env.EMAIL_PASSWORD
   }
 });
 
 const createPurchase = async (req, res) => {
   try {
     const { userId, productId } = req.params;
-    const { quantity = 1, address, paymentDetails } = req.body;
+    const { quantity = 1, fullAddress, paymentDetails } = req.body;
     // { cardNumber, cvv, expiryDate }
 
     // 1) Verify user exists
@@ -34,7 +34,7 @@ const createPurchase = async (req, res) => {
     let purchase = await PurchasesModel.findOne({ userId });
 
     // build the new product entry
-    const newProductEntry = { productId, quantity, address, paymentDetails };
+    const newProductEntry = { productId, quantity, fullAddress, paymentDetails };
 
     if (purchase) {
       // append to existing
@@ -48,20 +48,20 @@ const createPurchase = async (req, res) => {
       });
     }
 
-    const last4 = paymentDetails.cardNumber.slice(-4);
+    const last4 = paymentDetails?.cardNumber?.slice(-4);
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: user.email,
-      subject: `Order Confirmation: ${product.name}`,
+      subject: `Order Confirmation: ${product?.name}`,
       text: `
         Hello ${user.name},
 
         Thank you for your purchase!
 
         Order details:
-        • Product: ${product.name}
+        • Product: ${product?.name}
         • Quantity: ${quantity}
-        • Shipping Address: ${address}
+        • Shipping Address: Area: ${fullAddress?.area}, Street: ${fullAddress?.street}, State: ${fullAddress?.state}, City: ${fullAddress?.city}, Pincode: ${fullAddress?.pincode}
 
         Payment Details:
         • Card ending in: **** **** **** ${last4}
@@ -73,7 +73,7 @@ const createPurchase = async (req, res) => {
 
     transporter.sendMail(mailOptions)
       .then(() => {
-        console.log(`Confirmation email sent to ${user.email}`);
+        console.log(`Confirmation email sent to ${user?.email}`);
       })
       .catch(err => {
         console.error("Error sending confirmation email:", err);
@@ -87,7 +87,7 @@ const createPurchase = async (req, res) => {
 
   } catch (error) {
     console.error("createPurchase error:", error);
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error?.message });
   }
 };
 

@@ -84,9 +84,12 @@ const WarrantyDetails = () => {
                             <p className={Styles.ptag}>{item?.productId?.price}</p>
                         </div>
                     </div>
-                    <div className={Styles.imageContainer}>
-                        <img src={warranty} alt="Warranty Image" className={Styles.warrantyImage} />
-                        <p className={Styles.warrantyPeriod}>{warrantyInDays ? `${warrantyInDays} Days` : "N/A"}</p>
+                    <div className='relative'>
+                        <div className={Styles.imageContainer}>
+                            <img src={warranty} alt="Warranty Image" className={Styles.warrantyImage} />
+                            <p className={Styles.warrantyPeriod}>{warrantyInDays ? `${warrantyInDays} Days` : "N/A"}</p>
+                        </div>
+                        <p className='absolute top-[14px] right-[52px] py-0 rounded-4xl  border-gray-600  text-yellow-600 bg-white px-4 text-nowrap'>Best Buy</p>
                     </div>
                 </div>
             </div>
